@@ -17,15 +17,6 @@ function App() {
 
       {/* Scrollable Overlay Layer */}
       <div className="relative z-10">
-        <Hero />
-
-        <section className="relative min-h-screen py-20 px-6">
-          {/* Section 1 content to enable scrolling for fog effect */}
-          <div className="max-w-4xl mx-auto py-32 text-center h-screen flex flex-col justify-center">
-            <h2 className="text-4xl text-white font-serif italic mb-6">Navigating the Turbulence</h2>
-            <p className="font-mono text-gray-400">Scroll further down to experience the atmosphere transitioning towards clarity.</p>
-          </div>
-        </section>
 
         <section className="relative min-h-screen py-20 px-6">
           <div className="max-w-4xl mx-auto py-32 text-center h-[150vh] flex flex-col justify-center">
