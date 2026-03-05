@@ -49,7 +49,7 @@ const Hero = () => {
                 dirPath="/Flight_through_to_rest_to_clouds_images"
                 prefix="Flight_through_forest_to_clouds_delpmaspu__"
                 totalFrames={80}
-                fps={12}
+                fps={18}
             />
 
             {/* Gradient overlay for better text contrast over the video */}
