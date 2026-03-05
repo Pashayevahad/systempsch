@@ -11,9 +11,12 @@ const ComplexSystems = () => {
             setShowTitle(true);
         }, 1000);
 
+        // Direct Stream Link from Google Drive for 'Ants_forming_bridge_across_void'
+        const antsVideoUrl = 'https://drive.google.com/uc?export=download&id=1sPqIilfEk29c1RsaymUSF2e84ci3TMCD';
+
         // Lazy load the background video
         const loadTimer = setTimeout(() => {
-            setVideoSrc('/Ants_forming_bridge_across_void_delpmaspu_.mp4');
+            setVideoSrc(antsVideoUrl);
             if (videoRef.current) {
                 videoRef.current.load();
                 videoRef.current.play().catch(e => console.log('Autoplay possibly blocked', e));
@@ -29,7 +32,7 @@ const ComplexSystems = () => {
     return (
         <section className="relative w-full h-screen overflow-hidden flex flex-col items-center justify-center p-6 bg-charcoal animate-fade-in" data-purpose="complex-systems-section">
 
-            {/* Autoplaying, muted background video */}
+            {/* Autoplaying, muted background video from Cloud Source */}
             <video
                 ref={videoRef}
                 loop

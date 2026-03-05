@@ -1,75 +1,49 @@
-import React, { Suspense } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import ComplexSystems from './pages/ComplexSystems';
+import React, { useState, useEffect, useRef } from 'react';
 
-// Extract the layout around the main hero
-const HomepageLayout = () => {
-  return (
-    <div className="animate-fade-in w-full h-full">
-      <Hero />
+const Hero = () => {
+  const [videoSrc, setVideoSrc] = useState('');
+  const videoRef = useRef(null);
 
-      <section className="relative min-h-screen py-20 px-6">
-        <div className="max-w-4xl mx-auto py-32 text-center h-screen flex flex-col justify-center">
-          <h2 className="text-4xl text-white font-serif italic mb-6">Navigating the Turbulence</h2>
-          <p className="font-mono text-gray-400">Scroll further down to experience the atmosphere transitioning towards clarity.</p>
-        </div>
-      </section>
+  useEffect(() => {
+    // Direct Stream Link for 'Flight_through_forest_to_clouds'
+    const forestVideoUrl = 'https://drive.google.com/uc?export=download&id=13U1UUPJGhSmVsggra6jIGmIJesY-zZoJ';
 
-      <section className="relative min-h-screen py-20 px-6">
-        <div className="max-w-4xl mx-auto py-32 text-center h-[150vh] flex flex-col justify-center">
-          <h2 className="text-4xl text-white font-serif italic mb-6">Zone of Clarity</h2>
-          <p className="font-mono text-gray-400 mb-12">The fog lifts, the system becomes transparent.</p>
-        </div>
-      </section>
-    </div>
-  );
-};
-
-// Route wrapper to trigger location based cross-fading via standard CSS keys
-const AnimatedRoutes = () => {
-  const location = useLocation();
+    // Set source and ensure it plays
+    setVideoSrc(forestVideoUrl);
+    if (videoRef.current) {
+      videoRef.current.load();
+      videoRef.current.play().catch(e => console.log('Autoplay blocked', e));
+    }
+  }, []);
 
   return (
-    <div className="w-full h-full">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<HomepageLayout />} />
-        <Route path="/complex-systems" element={<ComplexSystems />} />
-      </Routes>
-    </div>
-  );
-};
+    <section className="relative w-full h-screen overflow-hidden bg-charcoal">
+      {/* Cloud-streamed Background Video */}
+      <video
+        ref={videoRef}
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover z-0"
+      >
+        {videoSrc && <source src={videoSrc} type="video/mp4" />}
+        Your browser does not support the video tag.
+      </video>
 
-function App() {
-  return (
-    <BrowserRouter>
-      <Navbar />
+      {/* Glassmorphic Overlay */}
+      <div className="absolute inset-0 bg-black/40 z-10"></div>
 
-      {/* Scrollable Main Content */}
-      <div className="relative z-10 bg-charcoal min-h-screen pt-16 lg:pt-0">
-        {/* We add top padding corresponding to navbar on mobile since navbar overlaps on desktop relative space vs fixed. Wait, let's keep it immersive. */}
-        <AnimatedRoutes />
-
-        <footer className="py-20 px-6 border-t border-[#FFD700]/10 bg-[#121212]" data-purpose="horizon-footer">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="text-center md:text-left">
-              <h4 className="font-mono font-bold text-[#FFD700] tracking-tighter text-lg mb-2">AeroNeural</h4>
-              <p className="text-xs font-mono text-white/40 uppercase tracking-widest">The Horizon Line • © 2026</p>
-            </div>
-            <div className="flex space-x-8 font-mono text-[10px] text-white/60">
-              <a href="#" className="hover:text-[#FFD700] uppercase tracking-widest transition-colors">Research Papers</a>
-              <a href="#" className="hover:text-[#FFD700] uppercase tracking-widest transition-colors">Methodology</a>
-              <a href="#" className="hover:text-[#FFD700] uppercase tracking-widest transition-colors">Terminal Access</a>
-            </div>
-            <div className="font-mono text-[10px] text-white/20">
-              LAT: 37.7749 | LONG: -122.4194
-            </div>
-          </div>
-        </footer>
+      <div className="relative z-20 flex flex-col items-center justify-center h-full text-center px-6">
+        <h1 className="text-5xl md:text-7xl font-bold text-white mb-4 tracking-tighter">
+          THE ASCENT
+        </h1>
+        <p className="font-mono text-[#FFD700] text-sm uppercase tracking-[0.3em]">
+          Navigating Complexity in Psychological Systems
+        </p>
       </div>
-    </BrowserRouter>
+    </section>
   );
-}
+};
 
-export default App;
+export default Hero;
