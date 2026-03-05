@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import ImageSequenceCanvas from './ImageSequenceCanvas';
 
 const Hero = () => {
     const [title, setTitle] = useState('');
-    const [videoSrc, setVideoSrc] = useState('');
-    const videoRef = useRef(null);
 
     useEffect(() => {
         // Fetch title dynamically from the Supabase 'content' table
@@ -27,17 +26,6 @@ const Hero = () => {
         };
 
         fetchHeroContent();
-
-        // Lazy load the background video to ensure initial page paints quickly without blocking
-        const loadTimer = setTimeout(() => {
-            setVideoSrc('https://drive.google.com/uc?export=download&id=13U1UUPJGhSmVsggra6jIGmIJesY-zZoJ&confirm=t');
-            if (videoRef.current) {
-                videoRef.current.load();
-                videoRef.current.play().catch(e => console.log('Autoplay possibly blocked by browser policy', e));
-            }
-        }, 500); // 500ms delay to prioritize critical render path
-
-        return () => clearTimeout(loadTimer);
     }, []);
 
     // Helper to keep the aesthetic formatting of italicizing the last word
@@ -57,17 +45,11 @@ const Hero = () => {
     return (
         <section className="relative w-full h-screen overflow-hidden flex flex-col items-center justify-center p-6" data-purpose="hero-section" id="ascent">
 
-            {/* Autoplaying, muted background video with lazy initialized source */}
-            <video
-                ref={videoRef}
-                loop
-                muted
-                playsInline
-                className="absolute inset-0 w-full h-full object-cover z-0"
-            >
-                {videoSrc && <source src={videoSrc} type="video/mp4" />}
-                Your browser does not support the video tag.
-            </video>
+            <ImageSequenceCanvas
+                dirPath="/Flight_through_to_rest_to_clouds_images"
+                prefix="Flight_through_forest_to_clouds_delpmaspu__"
+                totalFrames={80}
+            />
 
             {/* Gradient overlay for better text contrast over the video */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-transparent z-10 pointer-events-none"></div>

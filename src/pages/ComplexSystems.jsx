@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import ImageSequenceCanvas from '../components/ImageSequenceCanvas';
 
 const ComplexSystems = () => {
-    const [videoSrc, setVideoSrc] = useState('');
     const [showTitle, setShowTitle] = useState(false);
-    const videoRef = useRef(null);
 
     useEffect(() => {
         // Reveal text after 1 second
@@ -11,38 +10,19 @@ const ComplexSystems = () => {
             setShowTitle(true);
         }, 1000);
 
-        // Direct Stream Link from Google Drive for 'Ants_forming_bridge_across_void'
-        const antsVideoUrl = 'https://drive.google.com/uc?export=download&id=1sPqIilfEk29c1RsaymUSF2e84ci3TMCD&confirm=t';
-
-        // Lazy load the background video
-        const loadTimer = setTimeout(() => {
-            setVideoSrc(antsVideoUrl);
-            if (videoRef.current) {
-                videoRef.current.load();
-                videoRef.current.play().catch(e => console.log('Autoplay possibly blocked', e));
-            }
-        }, 500);
-
         return () => {
             clearTimeout(textTimer);
-            clearTimeout(loadTimer);
         };
     }, []);
 
     return (
         <section className="relative w-full h-screen overflow-hidden flex flex-col items-center justify-center p-6 bg-charcoal animate-fade-in" data-purpose="complex-systems-section">
 
-            {/* Autoplaying, muted background video from Cloud Source */}
-            <video
-                ref={videoRef}
-                loop
-                muted
-                playsInline
-                className="absolute inset-0 w-full h-full object-cover z-0"
-            >
-                {videoSrc && <source src={videoSrc} type="video/mp4" />}
-                Your browser does not support the video tag.
-            </video>
+            <ImageSequenceCanvas
+                dirPath="/Ants_forming_bridge_across_void_images"
+                prefix="Ants_forming_bridge_across_void_delpmaspu__"
+                totalFrames={80}
+            />
 
             {/* Gradient overlay for better text contrast over the video */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-transparent z-10 pointer-events-none"></div>
