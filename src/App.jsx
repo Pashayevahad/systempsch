@@ -1,58 +1,48 @@
 import React from 'react';
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
 
 function App() {
   return (
-    /* The Golden Background from your Stitch design */
-    <div className="relative min-h-screen bg-[#FFD700] overflow-hidden font-serif">
+    <>
+      <Navbar />
 
-      {/* Navigation Bar: Recreated with 6-tab glassmorphism */}
-      <nav className="relative z-20 flex justify-between items-center p-8 bg-black/5 backdrop-blur-sm border-b border-white/10">
-        <div className="text-xl font-bold tracking-tighter text-white">AeroNeural</div>
-        <div className="flex space-x-8 text-[11px] font-mono uppercase tracking-widest text-white/80">
-          <a href="#" className="hover:text-white transition">Complex System</a>
-          <a href="#" className="hover:text-white transition">Chaos Theory</a>
-          <a href="#" className="hover:text-white transition">System Thinking</a>
-          <a href="#" className="text-black font-bold">Psychology</a>
-          <a href="#" className="hover:text-white transition">Business Psych</a>
-          <a href="#" className="hover:text-white transition">Food Psych</a>
-        </div>
-      </nav>
+      {/* Scrollable Main Content */}
+      <div className="relative z-10 bg-charcoal">
+        <Hero />
 
-      {/* Hero Content: Matching "The Ascent" exactly */}
-      <main className="relative z-10 flex flex-col items-center justify-center min-h-[85vh] text-center px-6">
-        <h1 className="text-9xl font-black text-white uppercase tracking-tighter drop-shadow-2xl opacity-90">
-          The Ascent
-        </h1>
+        <section className="relative min-h-screen py-20 px-6">
+          <div className="max-w-4xl mx-auto py-32 text-center h-screen flex flex-col justify-center">
+            <h2 className="text-4xl text-white font-serif italic mb-6">Navigating the Turbulence</h2>
+            <p className="font-mono text-gray-400">Scroll further down to experience the atmosphere transitioning towards clarity.</p>
+          </div>
+        </section>
 
-        {/* Central Image: This links your screen.png asset */}
-        <div className="relative mt-8 w-80 h-80 flex items-center justify-center">
-          <div className="absolute inset-0 bg-white/20 rounded-full blur-3xl" />
-          <img
-            src="/screen.png"
-            className="relative z-10 w-full h-full object-contain pointer-events-none drop-shadow-[0_0_60px_rgba(255,255,255,0.3)]"
-            alt="Neural Tree"
-          />
-        </div>
+        <section className="relative min-h-screen py-20 px-6">
+          <div className="max-w-4xl mx-auto py-32 text-center h-[150vh] flex flex-col justify-center">
+            <h2 className="text-4xl text-white font-serif italic mb-6">Zone of Clarity</h2>
+            <p className="font-mono text-gray-400 mb-12">The fog lifts, the system becomes transparent.</p>
+          </div>
+        </section>
 
-        <p className="mt-12 max-w-xl text-white/70 font-mono text-xs uppercase tracking-[0.4em] leading-relaxed">
-          Where structural engineering meets cognitive resonance. <br />
-          Navigating the turbulence of existence.
-        </p>
-      </main>
-
-      {/* The Bottom Footer from Stitch */}
-      <footer className="absolute bottom-8 w-full flex justify-between px-12 text-[9px] font-mono text-white/30 uppercase tracking-[0.5em]">
-        <div>AeroNeural // The Horizon List © 2026</div>
-        <div className="flex space-x-6">
-          <span>Research Papers</span>
-          <span>Methodology</span>
-          <span>Terminal Access</span>
-        </div>
-      </footer>
-
-      {/* The Foundational Glue: Soft Gradient Layer */}
-      <div className="fixed inset-0 bg-gradient-to-b from-transparent to-[#FFD700]/40 pointer-events-none z-0" />
-    </div>
+        <footer className="py-20 px-6 border-t border-[#FFD700]/10 bg-[#121212]" data-purpose="horizon-footer">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+            <div className="text-center md:text-left">
+              <h4 className="font-mono font-bold text-[#FFD700] tracking-tighter text-lg mb-2">AeroNeural</h4>
+              <p className="text-xs font-mono text-white/40 uppercase tracking-widest">The Horizon Line • © 2026</p>
+            </div>
+            <div className="flex space-x-8 font-mono text-[10px] text-white/60">
+              <a href="#" className="hover:text-[#FFD700] uppercase tracking-widest transition-colors">Research Papers</a>
+              <a href="#" className="hover:text-[#FFD700] uppercase tracking-widest transition-colors">Methodology</a>
+              <a href="#" className="hover:text-[#FFD700] uppercase tracking-widest transition-colors">Terminal Access</a>
+            </div>
+            <div className="font-mono text-[10px] text-white/20">
+              LAT: 37.7749 | LONG: -122.4194
+            </div>
+          </div>
+        </footer>
+      </div>
+    </>
   );
 }
 
