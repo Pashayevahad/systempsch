@@ -6,6 +6,32 @@ const BusinessPsychology = () => {
     const [content, setContent] = useState('');
     const [loading, setLoading] = useState(true);
     const [showOverlay, setShowOverlay] = useState(false);
+    const [imagesLoaded, setImagesLoaded] = useState(false);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const preloadImages = async () => {
+            const promises = [];
+            for (let i = 0; i < 8; i++) {
+                promises.push(new Promise((resolve) => {
+                    const img = new Image();
+                    const paddedIndex = String(i).padStart(3, '0');
+                    img.src = `/Business_Psych_images/business_psych_${paddedIndex}.png`;
+                    img.onload = resolve;
+                    img.onerror = resolve; // Continue even if one fails
+                }));
+            }
+            await Promise.all(promises);
+            if (isMounted) {
+                setImagesLoaded(true);
+            }
+        };
+
+        preloadImages();
+
+        return () => { isMounted = false; };
+    }, []);
 
     useEffect(() => {
         const fetchContent = async () => {
@@ -48,15 +74,17 @@ const BusinessPsychology = () => {
             className="relative w-full h-screen overflow-hidden bg-transparent text-white"
             data-purpose="business-psychology-section"
         >
-            {/* Background Image Sequence */}
-            <ImageSequenceCanvas
-                dirPath="/Business_Psych_images"
-                prefix="business_psych_"
-                totalFrames={8}
-                fps={1}
-                extension=".png"
-                className="absolute inset-0 w-full h-full object-cover z-0"
-            />
+            {/* Background Image Sequence - Only render when fully loaded to prevent black flash */}
+            {imagesLoaded && (
+                <ImageSequenceCanvas
+                    dirPath="/Business_Psych_images"
+                    prefix="business_psych_"
+                    totalFrames={8}
+                    fps={0.8}
+                    extension=".png"
+                    className="absolute inset-0 w-full h-full object-cover z-0"
+                />
+            )}
             {/* Subtle gradient to ensure text remains somewhat readable if it overlaps, though positioned carefully */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-0 pointer-events-none"></div>
 
@@ -89,13 +117,6 @@ const BusinessPsychology = () => {
                         State: Architectural Blueprint
                     </span>
                 </div>
-            </div>
-
-            {/* Indicator that visual stream is running */}
-            <div className="absolute top-24 left-10 z-10">
-                <p className="font-mono text-white/50 uppercase tracking-widest text-[10px] bg-black/50 px-2 py-1 rounded mix-blend-difference">
-                    Visual Stream [1.0 FPS]
-                </p>
             </div>
         </section>
     );
