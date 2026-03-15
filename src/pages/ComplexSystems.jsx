@@ -45,7 +45,7 @@ const ComplexSystems = () => {
 
             {/* Full Screen Overlay Menu */}
             <div
-                className={`fixed inset-0 z-[100] transition-all duration-500 ease-in-out flex flex-col justify-center items-start pl-8 md:pl-24 pt-16 ${isMenuOpen ? 'opacity-100 pointer-events-auto bg-gradient-to-r from-[#0A0A0A] via-[#0A0A0A]/90 to-black/20 backdrop-blur-[2px]' : 'opacity-0 pointer-events-none bg-black/0'}`}
+                className={`fixed inset-0 z-[100] transition-all duration-500 ease-in-out flex flex-col justify-center items-start pl-8 md:pl-24 pt-16 overflow-y-auto ${isMenuOpen ? 'opacity-100 pointer-events-auto bg-gradient-to-r from-[#0A0A0A] via-[#0A0A0A]/90 to-black/20 backdrop-blur-[2px]' : 'opacity-0 pointer-events-none bg-black/0'}`}
             >
                 {/* Close Button */}
                 <button
@@ -104,7 +104,7 @@ const ComplexSystems = () => {
                 </div>
 
                 {/* Footer Section */}
-                <div className="absolute bottom-12 left-8 md:left-24 w-full max-w-sm px-4">
+                <div className="relative w-full max-w-sm px-4 mt-8 mb-8">
                     <div className="w-full h-px bg-white/10 mb-6"></div>
                     <p className="font-mono text-white/40 text-[10px] tracking-[0.3em] uppercase">
                         Systems Intelligence Framework<br />
@@ -114,7 +114,7 @@ const ComplexSystems = () => {
             </div>
 
             {/* Content over video */}
-            <div className="relative z-20 text-center max-w-4xl px-4">
+            <div className={`relative z-20 text-center max-w-4xl px-4 transition-opacity duration-300 ${isMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
                 {/* High-end glassmorphic text overlay that fades in after 1 second */}
                 <div className={`transition-all duration-1000 ease-out transform ${showTitle ? 'opacity-100 translate-y-0 backdrop-blur-md bg-white/5 border border-white/10 p-8 rounded-2xl shadow-2xl' : 'opacity-0 translate-y-8'}`}>
                     <p className="font-mono text-[#FFD700] mb-4 uppercase tracking-[0.2em] text-xs font-semibold">
