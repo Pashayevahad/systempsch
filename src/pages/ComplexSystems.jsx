@@ -5,6 +5,7 @@ import ImageSequenceCanvas from '../components/ImageSequenceCanvas';
 const ComplexSystems = () => {
     const [showTitle, setShowTitle] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [expandedPart, setExpandedPart] = useState(null);
 
     useEffect(() => {
         // Reveal text after 1 second
@@ -66,12 +67,39 @@ const ComplexSystems = () => {
                 </div>
 
                 {/* Parts Menu List */}
-                <div className="flex flex-col space-y-12 w-full max-w-2xl px-4 mt-8">
+                <div className="flex flex-col space-y-12 w-full max-w-2xl px-4 mt-8 pb-32">
                     <div className="border-l-2 border-[#FFD700] pl-6 py-1">
-                        <h2 className="font-mono text-[#FFD700] tracking-widest text-sm font-bold uppercase leading-relaxed">
-                            <span className="block mb-1">Part I: Biological and</span>
-                            <span className="block">Mechanical Foundations</span>
+                        <h2
+                            className="font-mono text-[#FFD700] tracking-widest text-sm font-bold uppercase leading-relaxed cursor-pointer hover:text-white transition-colors flex justify-between items-center"
+                            onClick={() => setExpandedPart(expandedPart === 'part1' ? null : 'part1')}
+                        >
+                            <div>
+                                <span className="block mb-1">Part I: Biological and</span>
+                                <span className="block">Mechanical Foundations</span>
+                            </div>
                         </h2>
+
+                        {/* Expandable Content for Part I */}
+                        <div className={`overflow-hidden transition-all duration-500 ease-in-out ${expandedPart === 'part1' ? 'max-h-[500px] opacity-100 mt-8' : 'max-h-0 opacity-0 mt-0'}`}>
+                            <div className="space-y-8 pr-12">
+                                <div>
+                                    <h3 className="font-serif italic text-white/90 text-2xl mb-2">
+                                        Chapter 1: The Genesis of Adaptivity—Homeostasis
+                                    </h3>
+                                    <p className="font-sans text-gray-400 text-sm leading-relaxed">
+                                        The Internal Environment, Dynamic Equilibrium, Regulatory Circuit
+                                    </p>
+                                </div>
+                                <div>
+                                    <h3 className="font-serif italic text-white/90 text-2xl mb-2">
+                                        Chapter 2: The Cybernetic Revolution
+                                    </h3>
+                                    <p className="font-sans text-gray-400 text-sm leading-relaxed">
+                                        First-Order Cybernetics, Feedback Dynamics, Ashby's Law
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="border-l-2 border-[#FFD700] pl-6 py-1">
