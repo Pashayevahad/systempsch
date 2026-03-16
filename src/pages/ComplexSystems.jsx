@@ -82,14 +82,14 @@ const ComplexSystems = () => {
                         {/* Expandable Content for Part I */}
                         <div className={`overflow-hidden transition-all duration-500 ease-in-out ${expandedPart === 'part1' ? 'max-h-[500px] opacity-100 mt-8' : 'max-h-0 opacity-0 mt-0'}`}>
                             <div className="space-y-8 pr-12">
-                                <div>
-                                    <h3 className="font-serif italic text-white/90 text-2xl mb-2">
+                                <Link to="/chapter-1" className="block cursor-pointer group">
+                                    <h3 className="font-serif italic text-white/90 text-2xl mb-2 group-hover:text-[#FFD700] transition-colors">
                                         Chapter 1: The Genesis of Adaptivity—Homeostasis
                                     </h3>
-                                    <p className="font-sans text-gray-400 text-sm leading-relaxed">
+                                    <p className="font-sans text-gray-400 text-sm leading-relaxed group-hover:text-gray-300 transition-colors">
                                         The Internal Environment, Dynamic Equilibrium, Regulatory Circuit
                                     </p>
-                                </div>
+                                </Link>
                                 <div>
                                     <h3 className="font-serif italic text-white/90 text-2xl mb-2">
                                         Chapter 2: The Cybernetic Revolution
