@@ -91,11 +91,11 @@ const Homeostasis = () => {
                 {/* Section 03 - Regulatory Circuit */}
                 <div className="relative mt-24">
                     {/* Background card */}
-                    <div className="bg-[#15100C] border border-[#2A1D13] rounded-[2rem] p-8 md:p-12">
+                    <Link to="/regulatory-circuit" className="block bg-[#15100C] border border-[#2A1D13] rounded-[2rem] p-8 md:p-12 hover:border-[#D95A11] transition-colors group cursor-pointer">
                         {/* Section Header */}
                         <div className="flex items-center mb-10 pl-2">
                             <span className="text-[#D4AF37] font-serif text-2xl font-bold mr-4">03.</span>
-                            <h2 className="text-3xl md:text-4xl font-serif text-white">The Regulatory Circuit</h2>
+                            <h2 className="text-3xl md:text-4xl font-serif text-white group-hover:text-[#D95A11] transition-colors">The Regulatory Circuit</h2>
                         </div>
 
                         {/* Cards Grid */}
@@ -134,7 +134,7 @@ const Homeostasis = () => {
                         <p className="text-center text-gray-500 italic mt-8 text-sm px-4">
                             Functional roles of the receptor, control center, and effector in a closed-loop system.
                         </p>
-                    </div>
+                    </Link>
                 </div>
             </div>
 
@@ -163,7 +163,7 @@ const Homeostasis = () => {
                     <span>Cybernetics</span>
                 </button>
             </div>
-        </div>
+        </div >
     );
 };
 
