@@ -93,9 +93,9 @@ const Homeostasis = () => {
                     {/* Background card */}
                     <div className="bg-[#15100C] border border-[#2A1D13] rounded-[2rem] p-8 md:p-12">
                         {/* Section Header */}
-                        <div className="flex items-start mb-10 pl-2">
-                            <span className="text-[#D4AF37] font-serif text-2xl font-bold mr-4 mt-[0.35rem]">03.</span>
-                            <h2 className="text-3xl md:text-4xl font-serif text-white">The Regulatory<br />Circuit</h2>
+                        <div className="flex items-center mb-10 pl-2">
+                            <span className="text-[#D4AF37] font-serif text-2xl font-bold mr-4">03.</span>
+                            <h2 className="text-3xl md:text-4xl font-serif text-white">The Regulatory Circuit</h2>
                         </div>
 
                         {/* Cards Grid */}
