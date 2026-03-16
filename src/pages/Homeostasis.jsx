@@ -75,13 +75,17 @@ const Homeostasis = () => {
                 <div className="relative pl-12 mb-20">
                     <div className="absolute left-0 top-1 text-[#D4AF37] font-serif text-2xl font-bold">02.</div>
                     <div className="absolute left-[36px] top-10 bottom-0 w-[1px] bg-white/10"></div>
-                    <h2 className="text-3xl font-serif text-white mb-6">Dynamic Equilibrium</h2>
-                    <p className="text-gray-300 leading-relaxed text-lg font-sans">
-                        A common misconception is that homeostasis implies a static state. In reality,
-                        <span className="text-[#D4AF37] font-semibold mx-1">"stasis" is a process of constant adjustment,</span>
-                        not a state of rest. It is a dynamic equilibrium where forces are perpetually balancing against
-                        external disturbances to maintain a narrow functional range.
-                    </p>
+                    <Link to="/dynamic-equilibrium" className="block cursor-pointer group">
+                        <h2 className="text-3xl font-serif text-white mb-6 group-hover:text-[#D95A11] transition-colors">
+                            Dynamic Equilibrium
+                        </h2>
+                        <p className="text-gray-300 leading-relaxed text-lg font-sans group-hover:text-gray-200 transition-colors">
+                            A common misconception is that homeostasis implies a static state. In reality,
+                            <span className="text-[#D4AF37] font-semibold mx-1">"stasis" is a process of constant adjustment,</span>
+                            not a state of rest. It is a dynamic equilibrium where forces are perpetually balancing against
+                            external disturbances to maintain a narrow functional range.
+                        </p>
+                    </Link>
                 </div>
 
                 {/* Section 03 - Regulatory Circuit */}

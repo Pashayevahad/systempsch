@@ -6,6 +6,7 @@ import BusinessPsychology from './pages/BusinessPsychology';
 import LinguisticPsychology from './pages/LinguisticPsychology';
 import Homeostasis from './pages/Homeostasis';
 import InternalEnvironment from './pages/InternalEnvironment';
+import DynamicEquilibrium from './pages/DynamicEquilibrium';
 import Navbar from './components/Navbar';
 
 const App = () => {
@@ -20,6 +21,7 @@ const App = () => {
           <Route path="/linguistic-psych" element={<LinguisticPsychology />} />
           <Route path="/chapter-1" element={<Homeostasis />} />
           <Route path="/internal-environment" element={<InternalEnvironment />} />
+          <Route path="/dynamic-equilibrium" element={<DynamicEquilibrium />} />
         </Routes>
       </div>
     </Router>
