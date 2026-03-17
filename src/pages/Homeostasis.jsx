@@ -31,23 +31,38 @@ const Homeostasis = () => {
             </div>
 
             {/* Hero Section */}
-            <div className="relative w-full h-[60vh] md:h-[70vh] flex flex-col justify-end pb-16 px-6 md:px-16"
-                style={{
-                    backgroundImage: 'url(/homeostasis_bg.png)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat'
-                }}>
-                {/* Gradient overlay to ensure text readability */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0E0A08] via-[#0E0A08]/50 to-transparent"></div>
+            <div className="relative w-full min-h-[60vh] md:min-h-[70vh] flex flex-col justify-end md:justify-center bg-[#0E0A08]">
 
-                <div className="relative z-10 max-w-4xl mx-auto w-full">
-                    <p className="text-[#D95A11] font-bold text-xs tracking-widest uppercase mb-4">Foundation Module</p>
-                    <h1 className="text-4xl md:text-6xl font-serif text-white leading-tight mb-2">
-                        Chapter 1: The <br /> Genesis of <br /> Adaptivity— <br />
-                        <span className="text-[#D4AF37]">Homeostasis</span>
-                    </h1>
-                    <div className="w-16 h-1 bg-[#D95A11] mt-8"></div>
+                {/* Image Section - Takes full width on mobile, right-anchored on desktop */}
+                <div className="absolute inset-0 md:left-[30%]"
+                    style={{
+                        backgroundImage: 'url(/homeostasis_bg.png)',
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat'
+                    }}>
+                    {/* Mobile gradient overlay */}
+                    <div className="md:hidden absolute inset-0 bg-gradient-to-t from-[#0E0A08] via-[#0E0A08]/80 to-transparent"></div>
+
+                    {/* Desktop gradient overlays for smooth blending */}
+                    <div className="hidden md:block absolute w-48 left-0 top-0 bottom-0 bg-gradient-to-r from-[#0E0A08] to-transparent z-10"></div>
+                    <div className="hidden md:block absolute inset-0 bg-gradient-to-r from-[#0E0A08]/80 via-[#0E0A08]/20 to-transparent"></div>
+                    <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-[#0E0A08] via-transparent to-transparent"></div>
+                </div>
+
+                {/* Text Content */}
+                <div className="relative z-20 w-full max-w-6xl mx-auto px-6 md:px-16 pt-32 pb-16 md:py-32 flex flex-col justify-end md:justify-center h-full">
+                    <div className="max-w-2xl mt-auto md:mt-0">
+                        <p className="text-[#D95A11] font-bold text-xs tracking-widest uppercase mb-4">Foundation Module</p>
+                        <h1 className="text-4xl md:text-5xl lg:text-7xl font-serif text-white leading-[1.1] mb-6">
+                            Chapter 1: The <br className="md:hidden" /> Genesis of <br className="md:hidden" /> Adaptivity— <br className="hidden md:block" />
+                            <span className="text-[#D4AF37] md:mt-2 md:inline-block">Homeostasis</span>
+                        </h1>
+                        <p className="hidden md:block text-gray-300 text-lg lg:text-xl font-sans leading-relaxed mb-0 max-w-lg">
+                            Explore the core mechanisms of biological stability. Understand how systems maintain dynamic equilibrium to adapt and thrive.
+                        </p>
+                        <div className="w-16 h-1 bg-[#D95A11] mt-6 md:mt-10"></div>
+                    </div>
                 </div>
             </div>
 
