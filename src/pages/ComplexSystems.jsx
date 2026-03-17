@@ -90,14 +90,14 @@ const ComplexSystems = () => {
                                         The Internal Environment, Dynamic Equilibrium, Regulatory Circuit
                                     </p>
                                 </Link>
-                                <div>
-                                    <h3 className="font-serif italic text-white/90 text-2xl mb-2">
+                                <Link to="/chapter-2" className="block cursor-pointer group">
+                                    <h3 className="font-serif italic text-white/90 text-2xl mb-2 group-hover:text-[#FFD700] transition-colors">
                                         Chapter 2: The Cybernetic Revolution
                                     </h3>
-                                    <p className="font-sans text-gray-400 text-sm leading-relaxed">
+                                    <p className="font-sans text-gray-400 text-sm leading-relaxed group-hover:text-gray-300 transition-colors">
                                         First-Order Cybernetics, Feedback Dynamics, Ashby's Law
                                     </p>
-                                </div>
+                                </Link>
                             </div>
                         </div>
                     </div>
