@@ -238,6 +238,13 @@ const ThermoregulationSim = () => {
                 tempHistory.forEach((pt, i) => { let x = gX + padL + (pt.time / maxTime) * chartW, y = gY + padT + chartH - ((pt.core - minT) / (maxT - minT)) * chartH; if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
                 ctx.stroke();
             }
+
+            // X-axis label
+            ctx.fillStyle = 'rgba(148, 163, 184, 0.6)';
+            ctx.font = 'bold 9px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('TIME (HOURS)', gX + (gW / 2) + 10, gY + gH - 8);
+
             ctx.restore();
         }
 
