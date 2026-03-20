@@ -6,6 +6,7 @@ import StabilityLandscape from '../components/StabilityLandscape';
 const RegulatoryCircuit = () => {
     const [activeTab, setActiveTab] = useState('theory');
     const [coreTemp, setCoreTemp] = useState(37.0);
+    const [envTemp, setEnvTemp] = useState(20);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -202,8 +203,8 @@ const RegulatoryCircuit = () => {
                                 </div>
                             ) : (
                                 <div className="space-y-6">
-                                    <ThermoregulationSim onUpdate={(t) => setCoreTemp(t)} />
-                                    <StabilityLandscape coreTemp={coreTemp} />
+                                    <ThermoregulationSim onUpdate={(c, e) => { setCoreTemp(c); setEnvTemp(e); }} />
+                                    <StabilityLandscape coreTemp={coreTemp} envTemp={envTemp} />
                                 </div>
                             )}
                         </div>

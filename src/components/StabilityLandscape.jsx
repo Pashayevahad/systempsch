@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 
-const StabilityLandscape = ({ coreTemp = 37.0 }) => {
+const StabilityLandscape = ({ coreTemp = 37.0, envTemp = 20 }) => {
     const canvasRef = useRef(null);
-    const ballPos = useRef({ x: 0, v: 0 });
+    const pos = useRef({ x: 0, v: 0 }); // Free rolling position
+    const isReleased = useRef(false);
     const requestRef = useRef();
 
     useEffect(() => {
@@ -23,76 +24,110 @@ const StabilityLandscape = ({ coreTemp = 37.0 }) => {
         const animate = () => {
             ctx.clearRect(0, 0, width, height);
 
-            // 1. Calculate Curve parameters based on coreTemp
-            // Thresholds: 37 is center.
-            const diff = coreTemp - 37.0;
-            const absDiff = Math.abs(diff);
+            // 1. Calculate Resilience (Curve Shape) based on envTemp
+            // External stress drives flattening. Baseline env is 20.
+            const envStress = Math.abs(envTemp - 20) / 25;
 
-            // b: Stability parameter. Negative = single well, Positive = double well.
-            // At 37: b = -1. At 40: b = 2.
-            const b = (absDiff * 1.5) - 1.0;
+            // k: Stiffness/Bifurcation parameter. 
+            // -1.2 (single deep well) to 1.5 (double well/flat).
+            const k = (envStress * 2.7) - 1.2;
 
-            // c: Tilt parameter.
-            const c = diff * 0.5;
+            // 2. Ball Mapping/Physics
+            // Map coreTemp directly to X (-1.5 to 1.5 range)
+            // 37.0 -> 0; 34.0 -> -1.0; 40.0 -> 1.0
+            const targetX = (coreTemp - 37.0) / 3.0;
 
-            // 2. Physics: Move the ball based on the gradient of the curve
-            // Curve: f(x) = 0.5*x^4 - b*x^2 + c*x
-            // Gradient f'(x) = 2*x^3 - 2*b*x + c
-            const x = ballPos.current.x;
-            const gradient = 2 * Math.pow(x, 3) - 2 * b * x + c;
+            // Tipping Point check: Release mapping if coreTemp is critical
+            if (coreTemp < 32.5 || coreTemp > 41.5) {
+                isReleased.current = true;
+            } else if (Math.abs(coreTemp - 37.0) < 0.5) {
+                // Relatch if system stabilizes
+                isReleased.current = false;
+            }
 
-            // Jitter/Noise increases as we get further from 37
-            const noise = (Math.random() - 0.5) * (absDiff * 0.05);
+            let x;
+            if (isReleased.current) {
+                // Free physics (rolling down the slope)
+                // f'(x) = 4x^3 - 2kx
+                const gradient = 4 * Math.pow(pos.current.x, 3) - 2 * k * pos.current.x;
+                pos.current.v = (pos.current.v * 0.98) - (gradient * 0.02);
+                pos.current.x += pos.current.v;
+                x = pos.current.x;
+            } else {
+                // Forced mapping (locking to coreTemp)
+                // Smooth transition to targetX
+                pos.current.x += (targetX - pos.current.x) * 0.1;
+                pos.current.v = 0;
+                x = pos.current.x;
+            }
 
-            ballPos.current.v = (ballPos.current.v * 0.95) - (gradient * 0.01) + noise;
-            ballPos.current.x += ballPos.current.v;
+            // Constrain
+            if (x > 1.9) { x = 1.9; pos.current.v *= -0.5; }
+            if (x < -1.9) { x = -1.9; pos.current.v *= -0.5; }
 
-            // Constrain ball
-            if (ballPos.current.x > 1.8) { ballPos.current.x = 1.8; ballPos.current.v *= -0.5; }
-            if (ballPos.current.x < -1.8) { ballPos.current.x = -1.8; ballPos.current.v *= -0.5; }
-
-            // 3. Draw the Curve
-            ctx.beginPath();
-            ctx.strokeStyle = '#38bdf8';
-            ctx.lineWidth = 4;
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = '#38bdf8';
-
-            const scaleX = width / 4;
-            const scaleY = 40;
+            // 3. Draw Curve V(x) = x^4 - kx^2
+            const scaleX = width / 4.5;
+            const scaleY = 35;
             const offsetX = width / 2;
             const offsetY = height / 2 + 50;
 
+            ctx.beginPath();
+            ctx.strokeStyle = k < 0.5 ? '#38bdf8' : '#f59e0b';
+            ctx.lineWidth = 4;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = ctx.strokeStyle;
+
             for (let i = -2; i <= 2; i += 0.05) {
-                const y = 0.5 * Math.pow(i, 4) - b * Math.pow(i, 2) + c * i;
-                const canvasX = offsetX + i * scaleX;
-                const canvasY = offsetY + y * scaleY;
-                if (i === -2) ctx.moveTo(canvasX, canvasY);
-                else ctx.lineTo(canvasX, canvasY);
+                const y = Math.pow(i, 4) - k * Math.pow(i, 2);
+                const cX = offsetX + i * scaleX;
+                const cY = offsetY + y * scaleY;
+                if (i === -2) ctx.moveTo(cX, cY);
+                else ctx.lineTo(cX, cY);
             }
             ctx.stroke();
             ctx.shadowBlur = 0;
 
-            // Labels
-            ctx.fillStyle = '#64748b';
-            ctx.font = 'bold 10px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('STABLE REGION', offsetX, offsetY - 80);
-            ctx.fillStyle = '#ef4444';
-            ctx.fillText('FAILURE', offsetX - scaleX * 1.7, offsetY - 50);
-            ctx.fillText('FAILURE', offsetX + scaleX * 1.7, offsetY - 50);
+            // Labels for states
+            const getStatusColor = () => {
+                if (isReleased.current) return '#ef4444';
+                if (k > 0.8) return '#f59e0b';
+                return '#10b981';
+            };
 
-            // 4. Draw the Ball
-            const bX = offsetX + ballPos.current.x * scaleX;
-            const bY = offsetY + (0.5 * Math.pow(ballPos.current.x, 4) - b * Math.pow(ballPos.current.x, 2) + c * ballPos.current.x) * scaleY;
+            ctx.fillStyle = '#64748b';
+            ctx.font = 'bold 9px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('HOMEOSTASIS BASIN', offsetX, offsetY - 90);
+
+            if (isReleased.current) {
+                ctx.fillStyle = '#ef4444';
+                ctx.font = 'bold 12px sans-serif';
+                ctx.fillText('CRITICAL FAILURE / TIPPING POINT', offsetX, offsetY - 110);
+            }
+
+            // 4. Draw Ball
+            const bX = offsetX + x * scaleX;
+            const bY = offsetY + (Math.pow(x, 4) - k * Math.pow(x, 2)) * scaleY;
 
             ctx.beginPath();
-            ctx.arc(bX, bY - 8, 8, 0, Math.PI * 2);
-            ctx.fillStyle = '#ef4444';
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = '#ef4444';
+            ctx.arc(bX, bY - 10, 10, 0, Math.PI * 2);
+            ctx.fillStyle = getStatusColor();
+            ctx.shadowBlur = 25;
+            ctx.shadowColor = ctx.fillStyle;
             ctx.fill();
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 2;
+            ctx.stroke();
             ctx.shadowBlur = 0;
+
+            // Jitter for visual feedback
+            const jitter = (Math.random() - 0.5) * (Math.max(0, k) * 2);
+            if (jitter > 0) {
+                ctx.beginPath();
+                ctx.arc(bX + jitter, bY - 10, 12, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                ctx.stroke();
+            }
 
             requestRef.current = requestAnimationFrame(animate);
         };
@@ -102,28 +137,41 @@ const StabilityLandscape = ({ coreTemp = 37.0 }) => {
             cancelAnimationFrame(requestRef.current);
             window.removeEventListener('resize', resize);
         };
-    }, [coreTemp]); // We re-initialize on coreTemp change to keep simple, 
-    // but the pos.current ref maintains physics state across frames.
+    }, [coreTemp, envTemp]);
 
     return (
-        <div className="w-full bg-[#1e293b]/30 rounded-3xl p-6 border border-slate-700/50 mt-8">
-            <div className="flex justify-between items-center mb-4">
+        <div className="w-full bg-[#0f172a]/80 rounded-[2.5rem] p-8 border border-slate-800 shadow-2xl mt-8">
+            <div className="flex justify-between items-end mb-6">
                 <div>
-                    <h3 className="text-xl font-bold text-slate-200">Stability Landscape</h3>
-                    <p className="text-slate-400 text-xs uppercase tracking-widest font-bold">Waddington Resilience Model</p>
+                    <div className="flex items-center gap-2 mb-1">
+                        <div className={`w-2 h-2 rounded-full animate-pulse ${isReleased.current ? 'bg-red-500' : 'bg-blue-400'}`}></div>
+                        <h3 className="text-2xl font-serif font-bold text-white italic">Stability Landscape</h3>
+                    </div>
+                    <p className="text-slate-500 text-[10px] tracking-[0.2em] font-bold uppercase">System State Dynamics • Waddington Potentials</p>
                 </div>
                 <div className="text-right">
-                    <span className="text-[10px] text-slate-500 block uppercase font-bold">Resilience Status</span>
-                    <span className={`text-sm font-bold uppercase ${Math.abs(coreTemp - 37) < 1 ? 'text-emerald-400' : (Math.abs(coreTemp - 37) < 3 ? 'text-amber-400' : 'text-red-500')}`}>
-                        {Math.abs(coreTemp - 37) < 1 ? 'Stable' : (Math.abs(coreTemp - 37) < 3 ? 'Decreasing' : 'Critical Failure')}
-                    </span>
+                    <span className="text-[10px] text-slate-500 block font-bold uppercase tracking-widest mb-1">Resilience</span>
+                    <div className="flex gap-1 h-1.5 w-32 bg-slate-800 rounded-full overflow-hidden">
+                        <div
+                            className={`h-full transition-all duration-500 ${isReleased.current ? 'bg-red-500' : (Math.abs(envTemp - 20) > 15 ? 'bg-amber-500' : 'bg-blue-500')}`}
+                            style={{ width: `${Math.max(10, 100 - Math.abs(envTemp - 20) * 2)}%` }}
+                        ></div>
+                    </div>
                 </div>
             </div>
-            <canvas ref={canvasRef} className="w-full h-[300px] cursor-crosshair" />
-            <div className="mt-4 grid grid-cols-3 gap-4 text-[9px] font-bold text-slate-500 uppercase tracking-tighter text-center">
-                <div className="border-t border-slate-800 pt-2">Irreversible Strain</div>
-                <div className="border-t border-slate-800 pt-2 text-slate-400">Homeostatic Basin</div>
-                <div className="border-t border-slate-800 pt-2">Decompression</div>
+            <canvas ref={canvasRef} className="w-full h-[300px] rounded-2xl bg-black/20" />
+            <div className="mt-6 flex justify-between text-[10px] font-black text-slate-600 uppercase tracking-widest">
+                <div className="flex flex-col items-start">
+                    <span className="text-red-900/40 mb-1">Negative State</span>
+                    <div className="w-12 h-0.5 bg-slate-800"></div>
+                </div>
+                <div className="flex flex-col items-center">
+                    <span className="text-slate-400 mb-1 border-b border-slate-700 pb-1">Dynamic Equilibrium</span>
+                </div>
+                <div className="flex flex-col items-end">
+                    <span className="text-red-900/40 mb-1">Negative State</span>
+                    <div className="w-12 h-0.5 bg-slate-800"></div>
+                </div>
             </div>
         </div>
     );

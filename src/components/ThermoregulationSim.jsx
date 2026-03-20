@@ -215,7 +215,7 @@ const ThermoregulationSim = ({ onUpdate }) => {
             if (hydroBar) hydroBar.style.width = hydration + "%";
 
             simTime += 0.003; frameCount++;
-            if (onUpdate && frameCount % 2 === 0) onUpdate(coreTemp);
+            if (onUpdate && frameCount % 2 === 0) onUpdate(coreTemp, envTempLocal);
             if (frameCount % 5 === 0) {
                 tempHistory.push({ time: simTime, core: coreTemp, shell: shellTemp });
                 if (tempHistory.length > 2000) tempHistory.shift();
