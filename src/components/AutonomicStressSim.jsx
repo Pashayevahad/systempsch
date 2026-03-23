@@ -159,6 +159,44 @@ const AutonomicStressSim = () => {
                 ctx.stroke();
             }
 
+            // --- DRAW PILL LABELS ON CANVAS ---
+            const drawPill = (text, y, bgColor, textColor) => {
+                const paddingH = 20;
+                const paddingV = 12;
+                ctx.font = 'bold 9px "JetBrains Mono", monospace';
+                const textWidth = ctx.measureText(text).width;
+                const pillWidth = textWidth + paddingH;
+                const pillHeight = 18;
+                const pillX = 20;
+                const pillY = y - pillHeight / 2;
+
+                // Draw Background Pill
+                ctx.fillStyle = bgColor;
+                ctx.beginPath();
+                ctx.roundRect(pillX, pillY, pillWidth, pillHeight, 4);
+                ctx.fill();
+
+                // Draw Border
+                ctx.strokeStyle = textColor + '44'; // Add transparency to border
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // Draw Text
+                ctx.fillStyle = textColor;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(text, pillX + pillWidth / 2, y);
+            };
+
+            // 1. Hyperarousal Label
+            drawPill('HYPERAROUSAL (FIGHT/FLIGHT)', windowTop - 15, 'rgba(153, 27, 27, 0.3)', '#f87171');
+
+            // 2. Window of Tolerance Label
+            drawPill('WINDOW OF TOLERANCE', centerY, 'rgba(21, 128, 61, 0.2)', '#4ade80');
+
+            // 3. Hypoarousal Label
+            drawPill('HYPOAROUSAL (FREEZE)', windowBottom + 15, 'rgba(30, 58, 138, 0.3)', '#60a5fa');
+
             // Draw "Current Position" indicator at the leading edge
             const leadY = pts[pts.length - 1];
             ctx.fillStyle = ctx.strokeStyle;
@@ -210,38 +248,7 @@ const AutonomicStressSim = () => {
             {/* 2. Graph Display Area */}
             <div ref={containerRef} className="relative w-full h-[400px] bg-[#0E0E0E] cursor-crosshair">
                 <canvas ref={canvasRef} className="w-full h-full" />
-
-                {/* Fixed Labels Overlay */}
-                <div className="absolute inset-y-0 left-0 w-full pointer-events-none p-6 flex flex-col justify-between">
-                    <div className="flex flex-col space-y-20 h-full relative">
-                        {/* Hyperarousal Label - Moves with windowTop */}
-                        <div
-                            className="absolute left-4 transition-all duration-300"
-                            style={{ top: canvasRef.current ? (canvasRef.current.height / 2 - (canvasRef.current.height * (0.8 - (chronicStress / 100) * 0.6)) / 2) - 40 : '10%' }}
-                        >
-                            <span className="px-3 py-1 bg-red-900/30 border border-red-500/30 text-red-400 text-[9px] font-bold uppercase tracking-widest rounded-md backdrop-blur-md">
-                                HYPERAROUSAL
-                            </span>
-                        </div>
-
-                        {/* WOT Label - Centered */}
-                        <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                            <span className="px-3 py-1 bg-green-900/30 border border-green-500/30 text-green-400 text-[9px] font-bold uppercase tracking-widest rounded-md backdrop-blur-md">
-                                Window of Tolerance
-                            </span>
-                        </div>
-
-                        {/* Hypoarousal Label - Moves with windowBottom */}
-                        <div
-                            className="absolute left-4 transition-all duration-300"
-                            style={{ top: canvasRef.current ? (canvasRef.current.height / 2 + (canvasRef.current.height * (0.8 - (chronicStress / 100) * 0.6)) / 2) + 10 : '85%' }}
-                        >
-                            <span className="px-3 py-1 bg-blue-900/30 border border-blue-500/30 text-blue-400 text-[9px] font-bold uppercase tracking-widest rounded-md backdrop-blur-md">
-                                HYPOAROUSAL
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                {/* HTML Labels Overlay REMOVED */}
             </div>
 
             {/* 3. Control Panel */}
