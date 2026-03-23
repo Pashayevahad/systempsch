@@ -5,6 +5,7 @@ import StabilityLandscape from '../components/StabilityLandscape';
 
 const RegulatoryCircuit = () => {
     const [activeTab, setActiveTab] = useState('theory');
+    const [simView, setSimView] = useState('menu'); // 'menu' | 'thermo'
     const [coreTemp, setCoreTemp] = useState(37.0);
     const [envTemp, setEnvTemp] = useState(20);
 
@@ -128,10 +129,14 @@ const RegulatoryCircuit = () => {
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                             </svg>
                                         </div>
-                                        <h2 className="text-2xl font-sans font-bold text-white">Interactive<br />Simulation</h2>
+                                        <h2 className="text-2xl font-sans font-bold text-white">
+                                            {simView === 'menu' ? 'Select Simulation' : 'Thermoregulation Simulation'}
+                                        </h2>
                                     </div>
                                     <p className="text-gray-400 text-[15px] leading-relaxed">
-                                        Use the dashboard on the right to observe how the regulatory circuit responds to environmental changes in real-time. Adjust the parameters to see the system balance itself.
+                                        {simView === 'menu'
+                                            ? 'Choose between biological and psychological regulatory models to explore how stability is maintained across different systems.'
+                                            : 'Observe how the regulatory circuit responds to environmental changes in real-time. Adjust parameters to see the system balance itself.'}
                                     </p>
                                 </div>
                             )}
@@ -202,9 +207,84 @@ const RegulatoryCircuit = () => {
                                     </div>
                                 </div>
                             ) : (
-                                <div className="space-y-6">
-                                    <ThermoregulationSim onUpdate={(c, e) => { setCoreTemp(c); setEnvTemp(e); }} />
-                                    <StabilityLandscape coreTemp={coreTemp} envTemp={envTemp} />
+                                <div className="w-full">
+                                    {simView === 'menu' ? (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full animate-fade-in">
+                                            {/* Card 1: Biological Regulation */}
+                                            <div
+                                                onClick={() => setSimView('thermo')}
+                                                className="group relative bg-[#120D0A] border border-white/5 rounded-3xl p-8 cursor-pointer overflow-hidden transition-all duration-500 hover:border-[#D95A11]/30 hover:shadow-[0_0_40px_rgba(217,90,17,0.15)] hover:-translate-y-1"
+                                            >
+                                                <div className="absolute inset-0 bg-gradient-to-br from-[#D95A11]/5 via-transparent to-[#4C8CBF]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+
+                                                <div className="relative z-10 h-full flex flex-col">
+                                                    <div className="w-14 h-14 bg-[#1C1410] rounded-2xl flex items-center justify-center mb-6 border border-white/5 group-hover:border-[#D95A11]/30 transition-colors shadow-inner">
+                                                        <svg className="w-7 h-7 text-[#D95A11]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                                        </svg>
+                                                    </div>
+
+                                                    <h3 className="text-2xl font-serif font-bold text-white mb-3 tracking-tight">Thermoregulation Circuit</h3>
+                                                    <p className="text-[#8A5A38] text-[11px] font-bold tracking-[0.2em] uppercase mb-4">Biological Homeostasis</p>
+
+                                                    <p className="text-gray-400 text-sm leading-relaxed mb-8 flex-grow">
+                                                        Observe how the body dynamically balances cold and heat stress using metabolic feedback loops.
+                                                    </p>
+
+                                                    <div className="flex items-center text-[#D95A11] text-xs font-bold tracking-widest uppercase">
+                                                        Initialize Module
+                                                        <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Card 2: Psychological Regulation */}
+                                            <Link
+                                                to="/autonomic-simulation"
+                                                className="group relative bg-[#120D0A] border border-white/5 rounded-3xl p-8 cursor-pointer overflow-hidden transition-all duration-500 hover:border-[#B32424]/30 hover:shadow-[0_0_40px_rgba(179,36,36,0.15)] hover:-translate-y-1 text-left block no-underline"
+                                            >
+                                                <div className="absolute inset-0 bg-gradient-to-tr from-[#B32424]/5 via-transparent to-[#000]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+
+                                                <div className="relative z-10 h-full flex flex-col">
+                                                    <div className="w-14 h-14 bg-[#1C1410] rounded-2xl flex items-center justify-center mb-6 border border-white/5 group-hover:border-[#B32424]/30 transition-colors shadow-inner">
+                                                        <svg className="w-7 h-7 text-[#B32424]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                                        </svg>
+                                                    </div>
+
+                                                    <h3 className="text-2xl font-serif font-bold text-white mb-3 tracking-tight">Autonomic Stress Circuit</h3>
+                                                    <p className="text-[#B32424] text-[11px] font-bold tracking-[0.2em] uppercase mb-4">Psychological Homeostasis</p>
+
+                                                    <p className="text-gray-400 text-sm leading-relaxed mb-8 flex-grow">
+                                                        Observe the Window of Tolerance and how the nervous system reacts to chronic and acute stress.
+                                                    </p>
+
+                                                    <div className="flex items-center text-[#B32424] text-xs font-bold tracking-widest uppercase">
+                                                        Configure Circuit
+                                                        <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-6 animate-fade-in">
+                                            <button
+                                                onClick={() => setSimView('menu')}
+                                                className="flex items-center text-[#8A5A38] hover:text-white transition-colors text-[10px] font-bold tracking-widest uppercase mb-2 group"
+                                            >
+                                                <svg className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                                                </svg>
+                                                Back to Selection
+                                            </button>
+                                            <ThermoregulationSim onUpdate={(c, e) => { setCoreTemp(c); setEnvTemp(e); }} />
+                                            <StabilityLandscape coreTemp={coreTemp} envTemp={envTemp} />
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>

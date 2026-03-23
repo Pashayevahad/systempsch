@@ -10,6 +10,7 @@ import DynamicEquilibrium from './pages/DynamicEquilibrium';
 import RegulatoryCircuit from './pages/RegulatoryCircuit';
 import CyberneticRevolution from './pages/CyberneticRevolution';
 import Navbar from './components/Navbar';
+import AutonomicSimulation from './pages/AutonomicSimulation';
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
           <Route path="/internal-environment" element={<InternalEnvironment />} />
           <Route path="/dynamic-equilibrium" element={<DynamicEquilibrium />} />
           <Route path="/regulatory-circuit" element={<RegulatoryCircuit />} />
+          <Route path="/autonomic-simulation" element={<AutonomicSimulation />} />
         </Routes>
       </div>
     </Router>
