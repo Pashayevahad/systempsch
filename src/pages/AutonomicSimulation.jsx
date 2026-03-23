@@ -33,10 +33,20 @@ const AutonomicSimulation = () => {
                 </div>
 
                 {/* Additional context/footer */}
-                <div className="mt-12 text-center">
-                    <p className="text-[10px] text-gray-600 uppercase tracking-[0.2em] font-bold">
+                <div className="mt-12 text-center flex flex-col items-center">
+                    <p className="text-[10px] text-gray-600 uppercase tracking-[0.2em] font-bold mb-8">
                         Systems Thinking &bull; Psychological Modulation Module
                     </p>
+
+                    <Link
+                        to="/regulatory-circuit"
+                        className="inline-flex items-center px-8 py-4 bg-[#B32424]/10 border border-[#B32424]/30 rounded-xl text-[#B32424] font-mono text-xs font-bold uppercase tracking-widest hover:bg-[#B32424] hover:text-white transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(179,36,36,0.3)] group"
+                    >
+                        <svg className="w-4 h-4 mr-3 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z" />
+                        </svg>
+                        Back to Simulations
+                    </Link>
                 </div>
             </div>
         </div>
