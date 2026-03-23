@@ -90,12 +90,12 @@ const CyberneticRevolution = () => {
                         <p className="text-[#A1A1A1] mb-10 max-w-sm mx-auto leading-relaxed">
                             Visualize the interplay between positive and negative feedback loops in real-time. Experiment with variety constraints in our sandbox environment.
                         </p>
-                        <button className="w-full bg-[#D95A11] hover:bg-[#F26419] text-white font-bold py-5 px-8 rounded-full shadow-lg shadow-[#D95A11]/20 transition-all flex items-center justify-center space-x-3 group">
+                        <Link to="/cybernetic-simulation" className="w-full bg-[#D95A11] hover:bg-[#F26419] text-white font-bold py-5 px-8 rounded-full shadow-lg shadow-[#D95A11]/20 transition-all flex items-center justify-center space-x-3 group no-underline">
                             <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M19,15.14V7.5L13,1.5V1H11V1.5L5,7.5V15.14C3.84,15.65 3,16.7 3,18V21A1,1 0 0,0 4,22H20A1,1 0 0,0 21,21V18C21,16.7 20.16,15.65 19,15.14M7,9L11,5V13.5C11,13.78 11.22,14 11.5,14H12.5C12.78,14 13,13.78 13,13.5V5L17,9V15H7V9M19,20H5V18C5,17.45 5.45,17 6,17H18A1,1 0 0,1 19,18V20Z" />
                             </svg>
                             <span>Launch Cybernetic Simulation</span>
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>
