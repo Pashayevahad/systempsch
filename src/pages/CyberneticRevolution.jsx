@@ -96,7 +96,7 @@ const CyberneticRevolution = () => {
                     {/* Content Cards */}
                     <div className="space-y-4 mb-16">
                         {/* Card 01 */}
-                        <div className="bg-[#151B26] rounded-2xl p-8 border border-white/5 relative overflow-hidden group hover:border-[#D95A11]/30 transition-all">
+                        <Link to="/chapter-2/first-order" className="block bg-[#151B26] rounded-2xl p-8 border border-white/5 relative overflow-hidden group hover:border-[#D95A11]/30 transition-all cursor-pointer">
                             <div className="flex justify-between items-start mb-6">
                                 <span className="text-[#D95A11] font-serif italic text-xl font-bold">01.</span>
                                 <div className="text-[#D95A11] opacity-60 group-hover:opacity-100 transition-opacity">
@@ -109,7 +109,7 @@ const CyberneticRevolution = () => {
                             <p className="text-[#A3A8B1] leading-relaxed font-sans text-sm">
                                 The study of communication and control in animals and machines. Exploring the foundational bridge between biological and technological systems.
                             </p>
-                        </div>
+                        </Link>
 
                         {/* Card 02 */}
                         <div className="bg-[#151B26] rounded-2xl p-8 border border-white/5 relative overflow-hidden group hover:border-[#D95A11]/30 transition-all">
@@ -158,10 +158,10 @@ const CyberneticRevolution = () => {
                                 Stafford Beer’s Viable System Model (VSM) and organizational health. Applying cybernetic principles to human institutions and management.
                             </p>
                         </div>
-                    </div>
+                    </div >
 
                     {/* Interactive Laboratory */}
-                    <div className="text-center mb-12 px-2">
+                    < div className="text-center mb-12 px-2" >
                         <h2 className="text-4xl font-serif text-white mb-6 italic">Interactive Laboratory</h2>
                         <p className="text-[#727883] mb-8 font-sans text-sm leading-relaxed max-w-[280px] mx-auto">
                             Experiment with feedback loops and variety constraints in a real-time virtualized environment.
@@ -199,11 +199,11 @@ const CyberneticRevolution = () => {
                             {/* Interactive glow effect */}
                             <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#D95A11]/40 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700"></div>
                         </div>
-                    </div>
-                </div>
+                    </div >
+                </div >
 
                 {/* Bottom Navigation */}
-                <div className="fixed bottom-0 left-0 right-0 bg-[#0A0D14]/80 backdrop-blur-2xl border-t border-white/5 h-28 flex items-center justify-around px-8 z-50">
+                < div className="fixed bottom-0 left-0 right-0 bg-[#0A0D14]/80 backdrop-blur-2xl border-t border-white/5 h-28 flex items-center justify-around px-8 z-50" >
                     <button className="flex flex-col items-center justify-center group opacity-40 hover:opacity-100 transition-opacity">
                         <div className="p-2 mb-1">
                             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -232,9 +232,9 @@ const CyberneticRevolution = () => {
                         </div>
                         <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#A1A1A1]">State-Space</span>
                     </button>
-                </div>
-            </div>
-        </div>
+                </div >
+            </div >
+        </div >
     );
 };
 

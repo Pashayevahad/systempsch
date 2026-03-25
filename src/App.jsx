@@ -12,6 +12,7 @@ import CyberneticRevolution from './pages/CyberneticRevolution';
 import Navbar from './components/Navbar';
 import AutonomicSimulation from './pages/AutonomicSimulation';
 import CyberneticSimulation from './pages/CyberneticSimulation';
+import FirstOrderCybernetics from './pages/FirstOrderCybernetics';
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/linguistic-psych" element={<LinguisticPsychology />} />
           <Route path="/chapter-1" element={<Homeostasis />} />
           <Route path="/chapter-2" element={<CyberneticRevolution />} />
+          <Route path="/chapter-2/first-order" element={<FirstOrderCybernetics />} />
           <Route path="/internal-environment" element={<InternalEnvironment />} />
           <Route path="/dynamic-equilibrium" element={<DynamicEquilibrium />} />
           <Route path="/regulatory-circuit" element={<RegulatoryCircuit />} />
