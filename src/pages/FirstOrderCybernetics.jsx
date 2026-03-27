@@ -80,12 +80,12 @@ const FirstOrderCybernetics = () => {
 
                     {/* Action Grids */}
                     <div className="grid grid-cols-2 gap-4 mb-8">
-                        <button className="bg-[#F28C44] hover:bg-[#FF9B54] text-[#1A1A1A] font-bold text-[10px] tracking-widest uppercase py-4 px-2 rounded-xl flex items-center justify-center space-x-2 transition-colors">
+                        <Link to="/chapter-2/behavior-taxonomy" state={{ tab: 'map' }} className="bg-[#F28C44] hover:bg-[#FF9B54] text-[#1A1A1A] font-bold text-[10px] tracking-widest uppercase py-4 px-2 rounded-xl flex items-center justify-center space-x-2 transition-colors">
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,19.2C8.03,19.2 4.8,15.97 4.8,12C4.8,8.03 8.03,4.8 12,4.8C15.97,4.8 19.2,8.03 19.2,12C19.2,15.97 15.97,19.2 12,19.2M13.4,14A1.4,1.4 0 0,1 12,15.4A1.4,1.4 0 0,1 10.6,14A1.4,1.4 0 0,1 12,12.6A1.4,1.4 0 0,1 13.4,14M12,7.2C10.5,7.2 9.2,8.4 9.2,9.9H10.7A1.3,1.3 0 0,1 12,8.6A1.3,1.3 0 0,1 13.3,9.9C13.3,11.2 11.4,11 11.4,13.2H12.9C12.9,11.6 14.8,11.4 14.8,9.9C14.8,8.4 13.5,7.2 12,7.2Z" />
                             </svg>
                             <span>Theory</span>
-                        </button>
+                        </Link>
 
                         <a href="https://drive.google.com/uc?export=download&id=1iYymRHCWLdtcu_jjuaVAHXnc98GcYgQc" target="_blank" rel="noopener noreferrer" className="bg-[#1A2235] hover:bg-[#232D45] text-white/80 font-bold text-[10px] tracking-widest uppercase py-4 px-2 rounded-xl flex items-center justify-center space-x-2 border border-white/5 transition-colors">
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -94,23 +94,23 @@ const FirstOrderCybernetics = () => {
                             <span>PDF</span>
                         </a>
 
-                        <button className="bg-[#1A2235] hover:bg-[#232D45] text-white/80 font-bold text-[10px] tracking-widest uppercase py-4 px-2 rounded-xl flex items-center justify-center space-x-2 border border-white/5 transition-colors">
+                        <Link to="/chapter-2/behavior-taxonomy" state={{ tab: 'sim_phys' }} className="bg-[#1A2235] hover:bg-[#232D45] text-white/80 font-bold text-[10px] tracking-widest uppercase py-4 px-2 rounded-xl flex items-center justify-center space-x-2 border border-white/5 transition-colors">
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M19,19H5V5H15V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V11H19V19M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3H14Z" />
                             </svg>
                             <span>Launch</span>
-                        </button>
+                        </Link>
 
-                        <button className="bg-[#1A2235] hover:bg-[#232D45] text-white/80 font-bold text-[10px] tracking-widest uppercase py-4 px-2 rounded-xl flex items-center justify-center space-x-2 border border-white/5 transition-colors">
+                        <Link to="/chapter-2/behavior-taxonomy" state={{ tab: 'map' }} className="bg-[#1A2235] hover:bg-[#232D45] text-white/80 font-bold text-[10px] tracking-widest uppercase py-4 px-2 rounded-xl flex items-center justify-center space-x-2 border border-white/5 transition-colors">
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M16 11V14H21V11H16M3 7H8V4H3V7M10 16.5L14 13L10 9.5V12H8V5H10V7.5L14 4L22 10.5L14 17L10 13.5V16.5M3 20H8V17H3V20Z" />
                             </svg>
                             <span>Diagram</span>
-                        </button>
+                        </Link>
                     </div>
 
                     {/* Placeholder Visual Preview */}
-                    <div className="w-full aspect-video bg-[#0B0F18] rounded-xl border border-white/5 relative overflow-hidden group cursor-pointer">
+                    <Link to="/chapter-2/behavior-taxonomy" state={{ tab: 'sim_phys' }} className="block w-full aspect-video bg-[#0B0F18] rounded-xl border border-white/5 relative overflow-hidden group cursor-pointer">
                         {/* Fake network pattern */}
                         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-[#0A0D14] to-[#0A0D14]"
                             style={{ backgroundImage: 'radial-gradient(circle, #609FB8 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
@@ -119,7 +119,7 @@ const FirstOrderCybernetics = () => {
                         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 backdrop-blur-sm">
                             <span className="text-white text-xs font-bold tracking-widest uppercase">View Simulation</span>
                         </div>
-                    </div>
+                    </Link>
 
                 </div>
             </div>
