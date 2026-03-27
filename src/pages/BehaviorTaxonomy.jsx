@@ -381,7 +381,13 @@ export default function BehaviorTaxonomy() {
                     state.actor.x += state.actor.vx * dt;
                     state.actor.y += state.actor.vy * dt;
                 } else {
-                    state.actor.active = false; // Connected!
+                    // Connected! Catch it and continue with it!
+                    state.actor.x = state.bug.x;
+                    state.actor.y = state.bug.y;
+
+                    // Simulate calming down the erratic toddler movement gradually
+                    state.bug.vx *= 0.95;
+                    state.bug.vy *= 0.95;
                 }
             }
         }
