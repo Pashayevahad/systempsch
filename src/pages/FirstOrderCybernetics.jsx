@@ -122,7 +122,71 @@ const FirstOrderCybernetics = () => {
                             <span className="text-white text-xs font-bold tracking-widest uppercase">View Simulation</span>
                         </div>
                     </Link>
+                </div>
 
+                {/* Card 2: Neural Calculus */}
+                <div className="bg-[#151B26] rounded-2xl p-6 md:p-8 border border-white/5 shadow-2xl relative mt-12">
+                    {/* Header Row */}
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-6 gap-y-2">
+                        <h3 className="text-3xl font-serif text-white/95 leading-tight max-w-[80%]">
+                            A Logical Calculus of the Ideas Immanent in Nervous Activity
+                        </h3>
+                        <span className="text-[#A3A8B1]/50 text-[9px] font-bold tracking-widest uppercase md:mt-2">
+                            Primary Source // 1943
+                        </span>
+                    </div>
+
+                    {/* Authors */}
+                    <div className="mb-6">
+                        <span className="text-[#609FB8] text-[10px] font-bold tracking-widest uppercase">
+                            Warren McCulloch & Walter Pitts
+                        </span>
+                    </div>
+
+                    {/* Abstract preview */}
+                    <p className="text-[#A3A8B1] leading-relaxed font-sans text-sm mb-10">
+                        The first mathematical model of a neural network. It proposed that binary neurons perform logical calculus, effectively launching artificial intelligence. This archive entry upgrades their rigid, global 'clock-driven' gates with modern biological realities: asynchronous continuous action potentials, leaky integration, and Hebbian plasticity loops.
+                    </p>
+
+                    {/* Action Grids */}
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                        <Link to="/chapter-2/neural-calculus" className="bg-[#F28C44] hover:bg-[#FF9B54] text-[#1A1A1A] font-bold text-[10px] tracking-widest uppercase py-4 px-2 rounded-xl flex items-center justify-center space-x-2 transition-colors">
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,19.2C8.03,19.2 4.8,15.97 4.8,12C4.8,8.03 8.03,4.8 12,4.8C15.97,4.8 19.2,8.03 19.2,12C19.2,15.97 15.97,19.2 12,19.2M13.4,14A1.4,1.4 0 0,1 12,15.4A1.4,1.4 0 0,1 10.6,14A1.4,1.4 0 0,1 12,12.6A1.4,1.4 0 0,1 13.4,14M12,7.2C10.5,7.2 9.2,8.4 9.2,9.9H10.7A1.3,1.3 0 0,1 12,8.6A1.3,1.3 0 0,1 13.3,9.9C13.3,11.2 11.4,11 11.4,13.2H12.9C12.9,11.6 14.8,11.4 14.8,9.9C14.8,8.4 13.5,7.2 12,7.2Z" />
+                            </svg>
+                            <span>Theory</span>
+                        </Link>
+
+                        <a href="https://drive.google.com/uc?export=download&id=1C7K3QGst7iRih73I_hSowO_O726mB2q5" target="_blank" rel="noopener noreferrer" className="bg-[#1A2235] hover:bg-[#232D45] text-white/80 font-bold text-[10px] tracking-widest uppercase py-4 px-2 rounded-xl flex items-center justify-center space-x-2 border border-white/5 transition-colors">
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M12,19L8,15H10.5V12H13.5V15H16L12,19M13,9V3.5L18.5,9H13Z" />
+                            </svg>
+                            <span>PDF</span>
+                        </a>
+                    </div>
+
+                    <div className="grid grid-cols-1 mb-8">
+                        <Link to="/chapter-2/neural-calculus" className="bg-[#1A2235] hover:bg-[#232D45] text-white/80 font-bold text-[10px] tracking-widest uppercase py-4 px-2 rounded-xl flex items-center justify-center space-x-2 border border-white/5 transition-colors">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            <span>Upgraded Simulation</span>
+                        </Link>
+                    </div>
+
+                    {/* Placeholder Visual Preview */}
+                    <Link to="/chapter-2/neural-calculus" className="block w-full aspect-video bg-[#0B0F18] rounded-xl border border-white/5 relative overflow-hidden group cursor-pointer">
+                        <div className="absolute inset-0 bg-gradient-to-b from-[#1E293B] to-[#0A0D14]"></div>
+                        <div className="absolute inset-0 opacity-20"
+                            style={{ backgroundImage: 'radial-gradient(circle, #60A5FA 1px, transparent 1px)', backgroundSize: '15px 15px' }}>
+                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0D14] via-transparent to-transparent"></div>
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 backdrop-blur-sm">
+                            <span className="text-white text-xs font-bold tracking-widest uppercase text-center">
+                                Initialize <br />Neural Matrix
+                            </span>
+                        </div>
+                    </Link>
                 </div>
             </div>
         </div>

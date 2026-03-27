@@ -14,6 +14,7 @@ import AutonomicSimulation from './pages/AutonomicSimulation';
 import CyberneticSimulation from './pages/CyberneticSimulation';
 import FirstOrderCybernetics from './pages/FirstOrderCybernetics';
 import BehaviorTaxonomy from './pages/BehaviorTaxonomy';
+import NeuralSimulation from './pages/NeuralSimulation';
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="/chapter-2" element={<CyberneticRevolution />} />
           <Route path="/chapter-2/first-order" element={<FirstOrderCybernetics />} />
           <Route path="/chapter-2/behavior-taxonomy" element={<BehaviorTaxonomy />} />
+          <Route path="/chapter-2/neural-calculus" element={<NeuralSimulation />} />
           <Route path="/internal-environment" element={<InternalEnvironment />} />
           <Route path="/dynamic-equilibrium" element={<DynamicEquilibrium />} />
           <Route path="/regulatory-circuit" element={<RegulatoryCircuit />} />
