@@ -479,7 +479,7 @@ export default function BehaviorTaxonomy() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-900 flex flex-col font-sans overflow-hidden">
+        <div className="min-h-screen pt-16 bg-slate-900 flex flex-col font-sans overflow-hidden">
 
             {/* Top Navigation */}
             <header className="bg-slate-800 border-b border-slate-700 px-6 py-4 shadow-md z-20 flex-shrink-0">
