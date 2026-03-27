@@ -95,26 +95,19 @@ const FirstOrderCybernetics = () => {
                         </a>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-2 mb-8">
-                        <Link to="/chapter-2/behavior-taxonomy" state={{ tab: 'sim_phys' }} className="bg-[#1A2235] hover:bg-[#232D45] text-white/80 font-bold text-[9px] tracking-widest uppercase py-4 px-1 rounded-xl flex items-center justify-center space-x-1 border border-white/5 transition-colors">
-                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                    <div className="grid grid-cols-2 gap-4 mb-8">
+                        <Link to="/chapter-2/behavior-taxonomy" state={{ tab: 'sim_phys' }} className="bg-[#1A2235] hover:bg-[#232D45] text-white/80 font-bold text-[10px] tracking-widest uppercase py-4 px-2 rounded-xl flex items-center justify-center space-x-2 border border-white/5 transition-colors">
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M19,19H5V5H15V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V11H19V19M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3H14Z" />
                             </svg>
-                            <span className="truncate flex-1 text-center">Physics Sim</span>
+                            <span>Physics Sim</span>
                         </Link>
 
-                        <Link to="/chapter-2/behavior-taxonomy" state={{ tab: 'sim_family' }} className="bg-[#D95A11]/20 hover:bg-[#D95A11]/40 text-[#FFCDA5] font-bold text-[9px] tracking-widest uppercase py-4 px-1 rounded-xl flex items-center justify-center space-x-1 border border-[#D95A11]/30 transition-colors">
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <Link to="/chapter-2/behavior-taxonomy" state={{ tab: 'sim_family' }} className="bg-[#D95A11]/20 hover:bg-[#D95A11]/40 text-[#FFCDA5] font-bold text-[10px] tracking-widest uppercase py-4 px-2 rounded-xl flex items-center justify-center space-x-2 border border-[#D95A11]/30 transition-colors">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
-                            <span className="truncate flex-1 text-center">Family Sim</span>
-                        </Link>
-
-                        <Link to="/chapter-2/behavior-taxonomy" state={{ tab: 'map' }} className="bg-[#1A2235] hover:bg-[#232D45] text-white/80 font-bold text-[9px] tracking-widest uppercase py-4 px-1 rounded-xl flex items-center justify-center space-x-1 border border-white/5 transition-colors">
-                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M16 11V14H21V11H16M3 7H8V4H3V7M10 16.5L14 13L10 9.5V12H8V5H10V7.5L14 4L22 10.5L14 17L10 13.5V16.5M3 20H8V17H3V20Z" />
-                            </svg>
-                            <span className="truncate flex-1 text-center">Diagram</span>
+                            <span>Family Sim</span>
                         </Link>
                     </div>
 
