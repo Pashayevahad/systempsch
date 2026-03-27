@@ -87,7 +87,7 @@ const FirstOrderCybernetics = () => {
                             <span>Theory</span>
                         </button>
 
-                        <a href="/papers/behavior-purpose-teleology.pdf" download="Behavior_Purpose_Teleology_1943.pdf" className="bg-[#1A2235] hover:bg-[#232D45] text-white/80 font-bold text-[10px] tracking-widest uppercase py-4 px-2 rounded-xl flex items-center justify-center space-x-2 border border-white/5 transition-colors">
+                        <a href="https://drive.google.com/uc?export=download&id=1iYymRHCWLdtcu_jjuaVAHXnc98GcYgQc" target="_blank" rel="noopener noreferrer" className="bg-[#1A2235] hover:bg-[#232D45] text-white/80 font-bold text-[10px] tracking-widest uppercase py-4 px-2 rounded-xl flex items-center justify-center space-x-2 border border-white/5 transition-colors">
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M12,19L8,15H10.5V12H13.5V15H16L12,19M13,9V3.5L18.5,9H13Z" />
                             </svg>
