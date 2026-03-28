@@ -19,39 +19,47 @@ export default function NeuralSimulation() {
     // Simulation state
     const simRef = useRef({
         nodes: [
-            { id: 'n1', x: 200, y: 350, potential: 0, baseline: 0, label: "Sensory A" },
-            { id: 'n2', x: 200, y: 550, potential: 0, baseline: 0, label: "Sensory B" },
-            { id: 'n3', x: 400, y: 450, potential: 0, baseline: 0, label: "Interneuron" },
-            { id: 'n4', x: 600, y: 350, potential: 0, baseline: 0, label: "Motor C" },
-            { id: 'n5', x: 600, y: 550, potential: 0, baseline: 0, label: "Motor D" },
+            { id: 'n1', x: 150, y: 350, potential: 0, baseline: 0, label: "Sensory A" },
+            { id: 'n2', x: 150, y: 500, potential: 0, baseline: 0, label: "Sensory B" },
+            { id: 'n_inh', x: 200, y: 650, potential: 0, baseline: 0, label: "Inhibitory Veto" },
+            { id: 'n_sensX', x: 200, y: 200, potential: 0, baseline: 0, label: "Sensory X" },
+            { id: 'n3', x: 350, y: 425, potential: 0, baseline: 0, label: "Interneuron" },
+            { id: 'n4', x: 600, y: 300, potential: 0, baseline: 0, label: "Motor C" },
+            { id: 'n5', x: 600, y: 500, potential: 0, baseline: 0, label: "Motor D" },
             // Circular loop for reverberation (memory)
-            { id: 'n6', x: 500, y: 180, potential: 0, baseline: 0, label: "Loop Alpha" },
-            { id: 'n7', x: 700, y: 180, potential: 0, baseline: 0, label: "Loop Beta" }
+            { id: 'n6', x: 450, y: 120, potential: 0, baseline: 0, label: "Loop Alpha" },
+            { id: 'n7', x: 750, y: 120, potential: 0, baseline: 0, label: "Loop Beta" }
         ],
         synapses: [
-            { source: 'n1', target: 'n3', weight: 1.0 },
-            { source: 'n2', target: 'n3', weight: 1.0 },
-            { source: 'n3', target: 'n4', weight: 1.0 },
-            { source: 'n3', target: 'n5', weight: 1.0 },
-            // The Reverberation Loop Setup
-            { source: 'n4', target: 'n6', weight: 1.0 },
-            { source: 'n6', target: 'n7', weight: 1.0 },
-            { source: 'n7', target: 'n4', weight: 1.2 },
+            { source: 'n1', target: 'n3', weight: 1.0, baseWeight: 1.0 },
+            { source: 'n2', target: 'n3', weight: 1.0, baseWeight: 1.0 },
+            { source: 'n_inh', target: 'n3', weight: 1.0, baseWeight: 1.0, isVeto: true },
+            { source: 'n_sensX', target: 'n5', weight: 1.0, baseWeight: 1.0 },
+            { source: 'n3', target: 'n4', weight: 1.0, baseWeight: 1.0 },
+            { source: 'n3', target: 'n5', weight: 1.0, baseWeight: 1.0 },
+            // The Reverberation Loop Setup (weight 2.5 for indefinite sustain)
+            { source: 'n4', target: 'n6', weight: 2.5, baseWeight: 2.5 },
+            { source: 'n6', target: 'n7', weight: 2.5, baseWeight: 2.5 },
+            { source: 'n7', target: 'n4', weight: 2.5, baseWeight: 2.5 },
         ],
         pulses: [],
+        psychons: [],
+        clockAccumulator: 0,
         // For Hebbian learning tracking
         lastSpikes: {}
     });
 
-    const [uiState, setUiState] = useState({ hebbian: true, decay: true, running: true });
+    const [uiState, setUiState] = useState({ hebbian: true, decay: true, discrete: false, running: true });
     const [, triggerRender] = useState(0);
 
     const resetSimulation = () => {
         const state = simRef.current;
         state.pulses = [];
+        state.psychons = [];
+        state.clockAccumulator = 0;
         state.lastSpikes = {};
-        state.nodes.forEach(n => n.potential = 0);
-        state.synapses.forEach(s => s.weight = 1.0);
+        state.nodes.forEach(n => { n.potential = 0; n.generation = 0; });
+        state.synapses.forEach(s => s.weight = s.baseWeight || 1.0);
         triggerRender(prev => prev + 1);
     };
 
@@ -71,6 +79,24 @@ export default function NeuralSimulation() {
         const state = simRef.current;
 
         if (uiState.running) {
+            let tickDiscrete = false;
+            if (uiState.discrete) {
+                state.clockAccumulator += dt;
+                if (state.clockAccumulator >= 0.5) { // Discrete tick every 500ms
+                    tickDiscrete = true;
+                    state.clockAccumulator = 0;
+                }
+            }
+
+            // Hebbian Plasticity Degradation (inactive pathways degrade over time)
+            if (uiState.hebbian) {
+                state.synapses.forEach(synapse => {
+                    if (synapse.weight > 0.1) {
+                        synapse.weight = Math.max(0.1, synapse.weight - 0.05 * dt);
+                    }
+                });
+            }
+
             // 1. Decay potentials (Leaky Integrate component)
             if (uiState.decay) {
                 state.nodes.forEach(node => {
@@ -85,9 +111,17 @@ export default function NeuralSimulation() {
             // 2. Check for Spikes
             state.nodes.forEach(node => {
                 if (node.potential >= SPIKE_THRESHOLD) {
+                    if (uiState.discrete && !tickDiscrete) {
+                        return; // Wait for the discrete clock tick
+                    }
+
                     // Neuron Fires (Fire component)
                     node.potential = REFRACTORY_POTENTIAL;
                     state.lastSpikes[node.id] = time;
+                    node.generation = (node.generation || 0) + 1; // Track generation for indefinite reference
+
+                    // Visualize the Psychon (Emission of a mental atom)
+                    state.psychons.push({ x: node.x, y: node.y, age: 0 });
 
                     // Generate travelling pulses asynchronously 
                     state.synapses.filter(s => s.source === node.id).forEach(synapse => {
@@ -103,6 +137,9 @@ export default function NeuralSimulation() {
                             distance: 0,
                             totalDistance: totalDist,
                             weight: synapse.weight,
+                            isVeto: synapse.isVeto,
+                            generation: node.generation,
+                            step: 0, // For discrete jumping
                             vx: (dx / totalDist) * PULSE_SPEED,
                             vy: (dy / totalDist) * PULSE_SPEED,
                             startX: node.x,
@@ -110,12 +147,12 @@ export default function NeuralSimulation() {
                         });
                     });
 
-                    // Hebbian Plasticity
+                    // Hebbian Plasticity Strengthening
                     if (uiState.hebbian) {
                         state.synapses.filter(s => s.target === node.id).forEach(synapse => {
                             const sourceSpikeTime = state.lastSpikes[synapse.source];
                             if (sourceSpikeTime && (time - sourceSpikeTime) < 800) {
-                                synapse.weight = Math.min(MAX_WEIGHT, synapse.weight + HEBBIAN_LEARNING_RATE);
+                                synapse.weight = Math.min(MAX_WEIGHT, synapse.weight + HEBBIAN_LEARNING_RATE + 0.1);
                             }
                         });
                     }
@@ -125,15 +162,38 @@ export default function NeuralSimulation() {
             // 3. Update Travelling Pulses
             for (let i = state.pulses.length - 1; i >= 0; i--) {
                 const pulse = state.pulses[i];
-                pulse.distance += PULSE_SPEED * dt;
+
+                if (!uiState.discrete) {
+                    pulse.distance += PULSE_SPEED * dt;
+                } else if (tickDiscrete) {
+                    if (pulse.step === 0) {
+                        pulse.distance = pulse.totalDistance * 0.5; // Midpoint at time t
+                        pulse.step = 1;
+                    } else {
+                        pulse.distance = pulse.totalDistance; // Arrival at time t+1
+                    }
+                }
 
                 if (pulse.distance >= pulse.totalDistance) {
                     const targetNode = state.nodes.find(n => n.id === pulse.target);
                     // Add potential based on graded synaptic weight
-                    if (targetNode.potential >= 0) {
-                        targetNode.potential += pulse.weight * 0.45;
+                    if (targetNode.potential >= 0 || pulse.isVeto) {
+                        if (pulse.isVeto) {
+                            targetNode.potential = REFRACTORY_POTENTIAL - 2.0; // Absolute Inhibition
+                        } else {
+                            targetNode.potential += pulse.weight * 0.55; // Threshold Logic (0.55 ensures 2 inputs needed)
+                            targetNode.generation = pulse.generation; // Carry timestamp forwards
+                        }
                     }
                     state.pulses.splice(i, 1);
+                }
+            }
+
+            // 4. Update Psychons
+            for (let i = state.psychons.length - 1; i >= 0; i--) {
+                state.psychons[i].age += dt;
+                if (state.psychons[i].age > 1.5) {
+                    state.psychons.splice(i, 1);
                 }
             }
         }
@@ -179,7 +239,7 @@ export default function NeuralSimulation() {
 
             ctx.lineWidth = 1 + (syn.weight * 0.8);
             const intensity = Math.min(1.0, 0.2 + syn.weight * 0.25);
-            ctx.strokeStyle = `rgba(100, 150, 255, ${intensity})`;
+            ctx.strokeStyle = syn.isVeto ? `rgba(239, 68, 68, ${intensity})` : `rgba(100, 150, 255, ${intensity})`;
             ctx.stroke();
         });
 
@@ -195,13 +255,29 @@ export default function NeuralSimulation() {
             const px = Math.pow(1 - progress, 2) * source.x + 2 * (1 - progress) * progress * cx + Math.pow(progress, 2) * target.x;
             const py = Math.pow(1 - progress, 2) * source.y + 2 * (1 - progress) * progress * cy + Math.pow(progress, 2) * target.y;
 
+            // Indefinite reference: color fades as generation loop increases
+            const maxGen = 10;
+            const blend = Math.min(1, (pulse.generation || 1) / maxGen);
+            const r = Math.round(255);
+            const g = Math.round(215 + (255 - 215) * blend); // From Gold to White
+            const b = Math.round(0 + (255 - 0) * blend);     // From Gold to White
+            const color = pulse.isVeto ? '#EF4444' : `rgb(${r}, ${g}, ${b})`;
+
             ctx.beginPath();
             ctx.arc(px, py, 3 + pulse.weight, 0, Math.PI * 2);
-            ctx.fillStyle = '#FFD700';
-            ctx.shadowColor = '#FFD700';
+            ctx.fillStyle = color;
+            ctx.shadowColor = color;
             ctx.shadowBlur = 12;
             ctx.fill();
             ctx.shadowBlur = 0;
+        });
+
+        // Draw Psychons (Mental atomic propositions)
+        state.psychons.forEach(psychon => {
+            const alpha = Math.max(0, 1 - (psychon.age / 1.5));
+            ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+            ctx.font = 'italic 18px serif';
+            ctx.fillText('Ψ', psychon.x + 15, psychon.y - 20 - (psychon.age * 20));
         });
 
         // Draw Nodes
@@ -327,7 +403,7 @@ export default function NeuralSimulation() {
                             <div className="flex items-center justify-between bg-[#1A2235] p-4 rounded-xl border border-[#334155]">
                                 <div className="pr-4">
                                     <div className="text-white font-bold text-sm mb-1">Hebbian Plasticity</div>
-                                    <div className="text-[#94A3B8] text-xs">Neural pathways physically thicken and strengthen when fired sequentially.</div>
+                                    <div className="text-[#94A3B8] text-xs">Active pathways functionally thicken, inactive ones degrade.</div>
                                 </div>
                                 <button
                                     onClick={() => setUiState(prev => ({ ...prev, hebbian: !prev.hebbian }))}
@@ -336,33 +412,60 @@ export default function NeuralSimulation() {
                                     <div className={`w-4 h-4 rounded-full bg-[#121826] absolute top-1 transition-transform ${uiState.hebbian ? 'translate-x-7' : 'translate-x-1'}`} />
                                 </button>
                             </div>
+
+                            {/* Discrete Time Sync Toggle */}
+                            <div className="flex items-center justify-between bg-[#1A2235] p-4 rounded-xl border border-[#334155]">
+                                <div className="pr-4">
+                                    <div className="text-white font-bold text-sm mb-1">Discrete Time Sync</div>
+                                    <div className="text-[#94A3B8] text-xs">Simulate synaptic delay (t to t+1 jumps).</div>
+                                </div>
+                                <button
+                                    onClick={() => setUiState(prev => ({ ...prev, discrete: !prev.discrete }))}
+                                    className={`w-12 h-6 rounded-full transition-colors relative flex-shrink-0 ${uiState.discrete ? 'bg-[#10B981]' : 'bg-[#334155]'}`}
+                                >
+                                    <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-transform ${uiState.discrete ? 'translate-x-7' : 'translate-x-1'}`} />
+                                </button>
+                            </div>
                         </div>
                     </div>
 
                     <div className="p-6 flex-1 flex flex-col text-[#94A3B8] bg-[#0A0D14] overflow-y-auto">
-                        <div className="mb-6">
+                        <div className="mb-4">
                             <h3 className="text-xs font-bold uppercase tracking-widest text-[#6482A3] mb-3 flex items-center">
-                                <BookOpen className="w-4 h-4 mr-2" /> Mechanical Fixes
+                                <BookOpen className="w-4 h-4 mr-2" /> The Mind-Body Epistemology
                             </h3>
-                            <p className="text-xs leading-relaxed bg-[#121826] p-4 rounded-xl border border-[#1E293B]">
-                                The original 1943 logic paper assumed rigid global clock intervals and binary gates perfectly holding signals without degradation.
-                                <br /><br />
-                                By implementing Piccinini's (2004) corrections, this model introduces <b>graded potentials</b>, <b>asynchronous spatial signaling</b> via pulses, and <b>dynamic topological reverberation</b> loops that sustain cyclic cybernetic memory on their own.
+                            <p className="text-[11px] leading-relaxed bg-[#121826] p-4 rounded-xl border border-[#1E293B]">
+                                How do physical networks yield purposive thought? <br /><br />
+                                <b>Threshold Logic</b> transforms inert relays into active decision AND-gates.<br /><br />
+                                <b>Indefinite Reference</b>: Signals in the alpha/beta loop turn white, losing their original stimulus timestamp.<br /><br />
+                                <b>Causal Irreciprocity</b>: Observe <b>Motor D</b>. It fires identically whether triggered by Interneuron or Sensory X—the origin is opaque. The <b>Psychon (Ψ)</b> represents the atomic "mental" realization of these physical threshold events.
                             </p>
                         </div>
 
-                        <div className="mt-auto space-y-3">
+                        <div className="mt-auto space-y-2">
                             <button
                                 onClick={() => { fireNode('n1'); setTimeout(() => fireNode('n2'), 150); }}
-                                className="w-full bg-[#1A2235] hover:bg-[#232D45] border border-[#334155] text-white font-bold py-4 px-6 rounded-xl transition-all flex items-center justify-center text-xs tracking-widest uppercase"
+                                className="w-full bg-[#1A2235] hover:bg-[#232D45] border border-[#334155] text-white font-bold py-3 px-6 rounded-xl transition-all flex items-center justify-center text-[10px] tracking-widest uppercase"
                             >
-                                <Zap className="w-4 h-4 mr-2 text-[#FFD700]" /> Burst Sensory Input
+                                <Zap className="w-3 h-3 mr-2 text-[#FFD700]" /> Burst Sensory (A+B)
+                            </button>
+                            <button
+                                onClick={() => fireNode('n_inh')}
+                                className="w-full bg-[#1A2235] hover:bg-[#452323] border border-[#EF4444] text-white font-bold py-3 px-6 rounded-xl transition-all flex items-center justify-center text-[10px] tracking-widest uppercase"
+                            >
+                                <Zap className="w-3 h-3 mr-2 text-[#EF4444]" /> Trigger Veto Signal
+                            </button>
+                            <button
+                                onClick={() => fireNode('n_sensX')}
+                                className="w-full bg-[#1A2235] hover:bg-[#232D45] border border-[#334155] text-white font-bold py-3 px-6 rounded-xl transition-all flex items-center justify-center text-[10px] tracking-widest uppercase"
+                            >
+                                <Zap className="w-3 h-3 mr-2 text-[#60A5FA]" /> Trigger Sensory X
                             </button>
                             <button
                                 onClick={resetSimulation}
-                                className="w-full bg-transparent hover:bg-[#1A2235] text-[#94A3B8] font-semibold py-3 px-6 rounded-xl transition-all flex items-center justify-center text-xs tracking-widest uppercase"
+                                className="w-full bg-transparent hover:bg-[#1A2235] text-[#94A3B8] font-semibold py-3 px-6 rounded-xl transition-all flex items-center justify-center text-[10px] tracking-widest uppercase mt-4"
                             >
-                                <RotateCcw className="w-4 h-4 mr-2" /> Erase Plasticity
+                                <RotateCcw className="w-3 h-3 mr-2" /> Reset State
                             </button>
                         </div>
                     </div>
