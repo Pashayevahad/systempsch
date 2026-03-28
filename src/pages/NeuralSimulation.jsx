@@ -11,14 +11,65 @@ const PULSE_SPEED = 250; // pixels per second
 const HEBBIAN_LEARNING_RATE = 0.4;
 const MAX_WEIGHT = 4.0;
 
-export default function NeuralSimulation() {
-    const canvasRef = useRef(null);
-    const requestRef = useRef();
-    const lastTimeRef = useRef(0);
+const getLevelConfig = (level) => {
+    let nodes = [];
+    let synapses = [];
 
-    // Simulation state
-    const simRef = useRef({
-        nodes: [
+    if (level === 1) {
+        nodes = [
+            { id: 'n1', x: 200, y: 350, potential: 0, baseline: 0, label: "Sensory A" },
+            { id: 'n4', x: 600, y: 350, potential: 0, baseline: 0, label: "Motor C" }
+        ];
+        synapses = [
+            { source: 'n1', target: 'n4', weight: 2.0, baseWeight: 2.0 }
+        ];
+    } else if (level === 2) {
+        nodes = [
+            { id: 'n1', x: 200, y: 300, potential: 0, baseline: 0, label: "Sensory A" },
+            { id: 'n2', x: 200, y: 500, potential: 0, baseline: 0, label: "Sensory B" },
+            { id: 'n3', x: 400, y: 400, potential: 0, baseline: 0, label: "Interneuron" },
+            { id: 'n4', x: 600, y: 400, potential: 0, baseline: 0, label: "Motor C" }
+        ];
+        synapses = [
+            { source: 'n1', target: 'n3', weight: 1.0, baseWeight: 1.0 },
+            { source: 'n2', target: 'n3', weight: 1.0, baseWeight: 1.0 },
+            { source: 'n3', target: 'n4', weight: 2.0, baseWeight: 2.0 }
+        ];
+    } else if (level === 3) {
+        nodes = [
+            { id: 'n1', x: 200, y: 300, potential: 0, baseline: 0, label: "Sensory A" },
+            { id: 'n2', x: 200, y: 500, potential: 0, baseline: 0, label: "Sensory B" },
+            { id: 'n_inh', x: 400, y: 600, potential: 0, baseline: 0, label: "Inhibitory Veto" },
+            { id: 'n3', x: 400, y: 400, potential: 0, baseline: 0, label: "Interneuron" },
+            { id: 'n4', x: 600, y: 400, potential: 0, baseline: 0, label: "Motor C" }
+        ];
+        synapses = [
+            { source: 'n1', target: 'n3', weight: 1.0, baseWeight: 1.0 },
+            { source: 'n2', target: 'n3', weight: 1.0, baseWeight: 1.0 },
+            { source: 'n_inh', target: 'n3', weight: 1.0, baseWeight: 1.0, isVeto: true },
+            { source: 'n3', target: 'n4', weight: 2.0, baseWeight: 2.0 }
+        ];
+    } else if (level === 4) {
+        nodes = [
+            { id: 'n1', x: 150, y: 350, potential: 0, baseline: 0, label: "Sensory A" },
+            { id: 'n2', x: 150, y: 500, potential: 0, baseline: 0, label: "Sensory B" },
+            { id: 'n_inh', x: 350, y: 600, potential: 0, baseline: 0, label: "Inhibitory Veto" },
+            { id: 'n3', x: 350, y: 425, potential: 0, baseline: 0, label: "Interneuron" },
+            { id: 'n4', x: 600, y: 300, potential: 0, baseline: 0, label: "Motor C" },
+            { id: 'n6', x: 450, y: 120, potential: 0, baseline: 0, label: "Loop Alpha" },
+            { id: 'n7', x: 750, y: 120, potential: 0, baseline: 0, label: "Loop Beta" }
+        ];
+        synapses = [
+            { source: 'n1', target: 'n3', weight: 1.0, baseWeight: 1.0 },
+            { source: 'n2', target: 'n3', weight: 1.0, baseWeight: 1.0 },
+            { source: 'n_inh', target: 'n3', weight: 1.0, baseWeight: 1.0, isVeto: true },
+            { source: 'n3', target: 'n4', weight: 2.0, baseWeight: 2.0 },
+            { source: 'n4', target: 'n6', weight: 2.5, baseWeight: 2.5 },
+            { source: 'n6', target: 'n7', weight: 2.5, baseWeight: 2.5 },
+            { source: 'n7', target: 'n4', weight: 2.5, baseWeight: 2.5 }
+        ];
+    } else {
+        nodes = [
             { id: 'n1', x: 150, y: 350, potential: 0, baseline: 0, label: "Sensory A" },
             { id: 'n2', x: 150, y: 500, potential: 0, baseline: 0, label: "Sensory B" },
             { id: 'n_inh', x: 200, y: 650, potential: 0, baseline: 0, label: "Inhibitory Veto" },
@@ -26,42 +77,58 @@ export default function NeuralSimulation() {
             { id: 'n3', x: 350, y: 425, potential: 0, baseline: 0, label: "Interneuron" },
             { id: 'n4', x: 600, y: 300, potential: 0, baseline: 0, label: "Motor C" },
             { id: 'n5', x: 600, y: 500, potential: 0, baseline: 0, label: "Motor D" },
-            // Circular loop for reverberation (memory)
             { id: 'n6', x: 450, y: 120, potential: 0, baseline: 0, label: "Loop Alpha" },
             { id: 'n7', x: 750, y: 120, potential: 0, baseline: 0, label: "Loop Beta" }
-        ],
-        synapses: [
+        ];
+        synapses = [
             { source: 'n1', target: 'n3', weight: 1.0, baseWeight: 1.0 },
             { source: 'n2', target: 'n3', weight: 1.0, baseWeight: 1.0 },
             { source: 'n_inh', target: 'n3', weight: 1.0, baseWeight: 1.0, isVeto: true },
-            { source: 'n_sensX', target: 'n5', weight: 1.0, baseWeight: 1.0 },
-            { source: 'n3', target: 'n4', weight: 1.0, baseWeight: 1.0 },
-            { source: 'n3', target: 'n5', weight: 1.0, baseWeight: 1.0 },
-            // The Reverberation Loop Setup (weight 2.5 for indefinite sustain)
+            { source: 'n_sensX', target: 'n5', weight: 2.0, baseWeight: 2.0 },
+            { source: 'n3', target: 'n4', weight: 2.0, baseWeight: 2.0 },
+            { source: 'n3', target: 'n5', weight: 2.0, baseWeight: 2.0 },
             { source: 'n4', target: 'n6', weight: 2.5, baseWeight: 2.5 },
             { source: 'n6', target: 'n7', weight: 2.5, baseWeight: 2.5 },
-            { source: 'n7', target: 'n4', weight: 2.5, baseWeight: 2.5 },
-        ],
+            { source: 'n7', target: 'n4', weight: 2.5, baseWeight: 2.5 }
+        ];
+    }
+    return JSON.parse(JSON.stringify({ nodes, synapses }));
+};
+
+export default function NeuralSimulation() {
+    const canvasRef = useRef(null);
+    const requestRef = useRef();
+    const lastTimeRef = useRef(0);
+
+    // Simulation state
+    const simRef = useRef({
+        nodes: getLevelConfig(1).nodes,
+        synapses: getLevelConfig(1).synapses,
         pulses: [],
         psychons: [],
         clockAccumulator: 0,
-        // For Hebbian learning tracking
         lastSpikes: {}
     });
 
-    const [uiState, setUiState] = useState({ hebbian: true, decay: true, discrete: false, running: true });
+    const [uiState, setUiState] = useState({ level: 1, hebbian: true, decay: true, discrete: false, running: true });
     const [, triggerRender] = useState(0);
 
-    const resetSimulation = () => {
+    const resetSimulation = (levelOverride = null) => {
+        const targetLevel = levelOverride || uiState.level;
         const state = simRef.current;
+        const config = getLevelConfig(targetLevel);
         state.pulses = [];
         state.psychons = [];
         state.clockAccumulator = 0;
         state.lastSpikes = {};
-        state.nodes.forEach(n => { n.potential = 0; n.generation = 0; });
-        state.synapses.forEach(s => s.weight = s.baseWeight || 1.0);
+        state.nodes = config.nodes;
+        state.synapses = config.synapses;
         triggerRender(prev => prev + 1);
     };
+
+    useEffect(() => {
+        resetSimulation(uiState.level);
+    }, [uiState.level]);
 
     const fireNode = (nodeId) => {
         const state = simRef.current;
@@ -381,8 +448,21 @@ export default function NeuralSimulation() {
                 <div className="w-full lg:w-96 bg-[#121826] border-r border-[#1E293B] shadow-xl flex flex-col z-20 flex-shrink-0">
                     <div className="p-6 border-b border-[#1E293B]">
                         <h2 className="text-sm font-bold text-white mb-6 uppercase tracking-widest flex items-center">
-                            <Settings className="w-4 h-4 mr-2 text-[#60A5FA]" /> System Parameters
+                            <Settings className="w-4 h-4 mr-2 text-[#60A5FA]" /> Assembly Level
                         </h2>
+
+                        {/* Level Selector */}
+                        <div className="flex bg-[#0A0D14] p-1 rounded-xl mb-6">
+                            {[1, 2, 3, 4, 5].map(lvl => (
+                                <button
+                                    key={lvl}
+                                    onClick={() => setUiState(prev => ({ ...prev, level: lvl }))}
+                                    className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${uiState.level === lvl ? 'bg-[#334155] text-white shadow-md' : 'text-[#6482A3] hover:text-[#94A3B8]'}`}
+                                >
+                                    L{lvl}
+                                </button>
+                            ))}
+                        </div>
 
                         <div className="space-y-4">
                             {/* Leaky Integrate Toggle */}
@@ -399,73 +479,106 @@ export default function NeuralSimulation() {
                                 </button>
                             </div>
 
-                            {/* Hebbian Plasticity Toggle */}
-                            <div className="flex items-center justify-between bg-[#1A2235] p-4 rounded-xl border border-[#334155]">
-                                <div className="pr-4">
-                                    <div className="text-white font-bold text-sm mb-1">Hebbian Plasticity</div>
-                                    <div className="text-[#94A3B8] text-xs">Active pathways functionally thicken, inactive ones degrade.</div>
+                            {/* Conditional Toggles based on level */}
+                            {uiState.level >= 4 && (
+                                <div className="flex items-center justify-between bg-[#1A2235] p-4 rounded-xl border border-[#334155]">
+                                    <div className="pr-4">
+                                        <div className="text-white font-bold text-sm mb-1">Hebbian Plasticity</div>
+                                        <div className="text-[#94A3B8] text-xs">Active pathways functionally thicken, inactive ones degrade.</div>
+                                    </div>
+                                    <button
+                                        onClick={() => setUiState(prev => ({ ...prev, hebbian: !prev.hebbian }))}
+                                        className={`w-12 h-6 rounded-full transition-colors relative flex-shrink-0 ${uiState.hebbian ? 'bg-[#FFD700]' : 'bg-[#334155]'}`}
+                                    >
+                                        <div className={`w-4 h-4 rounded-full bg-[#121826] absolute top-1 transition-transform ${uiState.hebbian ? 'translate-x-7' : 'translate-x-1'}`} />
+                                    </button>
                                 </div>
-                                <button
-                                    onClick={() => setUiState(prev => ({ ...prev, hebbian: !prev.hebbian }))}
-                                    className={`w-12 h-6 rounded-full transition-colors relative flex-shrink-0 ${uiState.hebbian ? 'bg-[#FFD700]' : 'bg-[#334155]'}`}
-                                >
-                                    <div className={`w-4 h-4 rounded-full bg-[#121826] absolute top-1 transition-transform ${uiState.hebbian ? 'translate-x-7' : 'translate-x-1'}`} />
-                                </button>
-                            </div>
+                            )}
 
-                            {/* Discrete Time Sync Toggle */}
-                            <div className="flex items-center justify-between bg-[#1A2235] p-4 rounded-xl border border-[#334155]">
-                                <div className="pr-4">
-                                    <div className="text-white font-bold text-sm mb-1">Discrete Time Sync</div>
-                                    <div className="text-[#94A3B8] text-xs">Simulate synaptic delay (t to t+1 jumps).</div>
+                            {uiState.level >= 3 && (
+                                <div className="flex items-center justify-between bg-[#1A2235] p-4 rounded-xl border border-[#334155]">
+                                    <div className="pr-4">
+                                        <div className="text-white font-bold text-sm mb-1">Discrete Time Sync</div>
+                                        <div className="text-[#94A3B8] text-xs">Simulate synaptic delay (t to t+1 jumps).</div>
+                                    </div>
+                                    <button
+                                        onClick={() => setUiState(prev => ({ ...prev, discrete: !prev.discrete }))}
+                                        className={`w-12 h-6 rounded-full transition-colors relative flex-shrink-0 ${uiState.discrete ? 'bg-[#10B981]' : 'bg-[#334155]'}`}
+                                    >
+                                        <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-transform ${uiState.discrete ? 'translate-x-7' : 'translate-x-1'}`} />
+                                    </button>
                                 </div>
-                                <button
-                                    onClick={() => setUiState(prev => ({ ...prev, discrete: !prev.discrete }))}
-                                    className={`w-12 h-6 rounded-full transition-colors relative flex-shrink-0 ${uiState.discrete ? 'bg-[#10B981]' : 'bg-[#334155]'}`}
-                                >
-                                    <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-transform ${uiState.discrete ? 'translate-x-7' : 'translate-x-1'}`} />
-                                </button>
-                            </div>
+                            )}
                         </div>
                     </div>
 
                     <div className="p-6 flex-1 flex flex-col text-[#94A3B8] bg-[#0A0D14] overflow-y-auto">
                         <div className="mb-4">
                             <h3 className="text-xs font-bold uppercase tracking-widest text-[#6482A3] mb-3 flex items-center">
-                                <BookOpen className="w-4 h-4 mr-2" /> The Mind-Body Epistemology
+                                <BookOpen className="w-4 h-4 mr-2" />
+                                {uiState.level === 1 ? 'Phase 1: Basic Transmission' :
+                                    uiState.level === 2 ? 'Phase 2: Threshold Logic' :
+                                        uiState.level === 3 ? 'Phase 3: Absolute Inhibition' :
+                                            uiState.level === 4 ? 'Phase 4: Functional Reverberation' :
+                                                'Phase 5: Mind-Body Epistemology'}
                             </h3>
                             <p className="text-[11px] leading-relaxed bg-[#121826] p-4 rounded-xl border border-[#1E293B]">
-                                How do physical networks yield purposive thought? <br /><br />
-                                <b>Threshold Logic</b> transforms inert relays into active decision AND-gates.<br /><br />
-                                <b>Indefinite Reference</b>: Signals in the alpha/beta loop turn white, losing their original stimulus timestamp.<br /><br />
-                                <b>Causal Irreciprocity</b>: Observe <b>Motor D</b>. It fires identically whether triggered by Interneuron or Sensory X—the origin is opaque. The <b>Psychon (Ψ)</b> represents the atomic "mental" realization of these physical threshold events.
+                                {uiState.level === 1 && "A single sensory node transmits an action potential to a motor node. Observe the pulse traveling, delivering graded potential, and degrading via 'leakage' over time."}
+                                {uiState.level === 2 && "The introduction of an Interneuron. Notice that firing only A or B isn't enough to trigger it. This transforms inert biological relays into physical AND-gates (Threshold Logic)."}
+                                {uiState.level === 3 && "Adding the 'Veto' signal. Firing the inhibitory node forces the Interneuron into a deep refractory state (-5.0), perfectly canceling out any simultaneous excitatory summations."}
+                                {uiState.level === 4 && "The recurrent memory loop. Signals spin indefinitely, maintaining working memory. Watch the circulating pulse turn white as it loses its original temporal timestamp (Indefinite Reference)."}
+                                {uiState.level === 5 && <span>Observe <b>Motor D</b>: It fires identically whether triggered by the Interneuron or Sensory X—its origin is causally opaque. The <b>Psychon (Ψ)</b> emerges as the atomic "mental" realization of these collective physical thresholds.</span>}
                             </p>
                         </div>
 
                         <div className="mt-auto space-y-2">
+                            {uiState.level === 1 && (
+                                <button
+                                    onClick={() => fireNode('n1')}
+                                    className="w-full bg-[#1A2235] hover:bg-[#232D45] border border-[#334155] text-white font-bold py-3 px-6 rounded-xl transition-all flex items-center justify-center text-[10px] tracking-widest uppercase"
+                                >
+                                    <Zap className="w-3 h-3 mr-2 text-[#FFD700]" /> Fire Sensory A
+                                </button>
+                            )}
+
+                            {uiState.level >= 2 && (
+                                <>
+                                    <div className="flex gap-2 mb-2">
+                                        <button onClick={() => fireNode('n1')} className="flex-1 bg-[#1A2235] hover:bg-[#232D45] border border-[#334155] text-white font-bold py-2 rounded-xl text-[10px] uppercase tracking-wider">Fire A</button>
+                                        <button onClick={() => fireNode('n2')} className="flex-1 bg-[#1A2235] hover:bg-[#232D45] border border-[#334155] text-white font-bold py-2 rounded-xl text-[10px] uppercase tracking-wider">Fire B</button>
+                                    </div>
+                                    <button
+                                        onClick={() => { fireNode('n1'); setTimeout(() => fireNode('n2'), 150); }}
+                                        className="w-full bg-[#1A2235] hover:bg-[#232D45] border border-[#334155] text-white font-bold py-3 px-6 rounded-xl transition-all flex items-center justify-center text-[10px] tracking-widest uppercase"
+                                    >
+                                        <Zap className="w-3 h-3 mr-2 text-[#FFD700]" /> Burst Sensory (A+B)
+                                    </button>
+                                </>
+                            )}
+
+                            {uiState.level >= 3 && (
+                                <button
+                                    onClick={() => fireNode('n_inh')}
+                                    className="w-full bg-[#1A2235] hover:bg-[#452323] border border-[#EF4444] text-white font-bold py-3 px-6 rounded-xl transition-all flex items-center justify-center text-[10px] tracking-widest uppercase"
+                                >
+                                    <Zap className="w-3 h-3 mr-2 text-[#EF4444]" /> Trigger Veto Signal
+                                </button>
+                            )}
+
+                            {uiState.level >= 5 && (
+                                <button
+                                    onClick={() => fireNode('n_sensX')}
+                                    className="w-full bg-[#1A2235] hover:bg-[#232D45] border border-[#334155] text-white font-bold py-3 px-6 rounded-xl transition-all flex items-center justify-center text-[10px] tracking-widest uppercase"
+                                >
+                                    <Zap className="w-3 h-3 mr-2 text-[#60A5FA]" /> Trigger Sensory X
+                                </button>
+                            )}
+
                             <button
-                                onClick={() => { fireNode('n1'); setTimeout(() => fireNode('n2'), 150); }}
-                                className="w-full bg-[#1A2235] hover:bg-[#232D45] border border-[#334155] text-white font-bold py-3 px-6 rounded-xl transition-all flex items-center justify-center text-[10px] tracking-widest uppercase"
-                            >
-                                <Zap className="w-3 h-3 mr-2 text-[#FFD700]" /> Burst Sensory (A+B)
-                            </button>
-                            <button
-                                onClick={() => fireNode('n_inh')}
-                                className="w-full bg-[#1A2235] hover:bg-[#452323] border border-[#EF4444] text-white font-bold py-3 px-6 rounded-xl transition-all flex items-center justify-center text-[10px] tracking-widest uppercase"
-                            >
-                                <Zap className="w-3 h-3 mr-2 text-[#EF4444]" /> Trigger Veto Signal
-                            </button>
-                            <button
-                                onClick={() => fireNode('n_sensX')}
-                                className="w-full bg-[#1A2235] hover:bg-[#232D45] border border-[#334155] text-white font-bold py-3 px-6 rounded-xl transition-all flex items-center justify-center text-[10px] tracking-widest uppercase"
-                            >
-                                <Zap className="w-3 h-3 mr-2 text-[#60A5FA]" /> Trigger Sensory X
-                            </button>
-                            <button
-                                onClick={resetSimulation}
+                                onClick={() => resetSimulation()}
                                 className="w-full bg-transparent hover:bg-[#1A2235] text-[#94A3B8] font-semibold py-3 px-6 rounded-xl transition-all flex items-center justify-center text-[10px] tracking-widest uppercase mt-4"
                             >
-                                <RotateCcw className="w-3 h-3 mr-2" /> Reset State
+                                <RotateCcw className="w-3 h-3 mr-2" /> Reset Network
                             </button>
                         </div>
                     </div>
